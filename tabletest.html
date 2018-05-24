@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="zh-Hans"> <!-- 繁体中文-->
+<html lang="zh-Hant"> <!-- 简体中文-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="paulhee">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,viewport-fit=cover, maximum-scale=1, user-scalable=no">
+    <!-- 宽度为设备宽度，默认缩放比为 1,viewport-fit=cover 以兼容 iPhone X 全面屏“刘海”的显示 -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <!-- DNS 预读取是一项使浏览器主动去执行域名解析的功能，其范围包括当前文档内的所有链接，这能够减少用户点击链接时的延迟 -->
+    <!-- 预加载 指示浏览器预先请求当前页面所需要的关键性资源-->
+    <!-- <link rel="preload" href="/css/main.css" as="style"> -->
+    <!-- 预请求 指示浏览器预先请求用户即将浏览页面所需要的关键性资源。-->
+    <!--  <link rel="prefetch" href="/img/css-sprite.png"> -->
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/leaflet.draw.css">
+    <!--<link rel="stylesheet" href="css/leftsideBar.css">-->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="css/b.page.bootstrap3.css">-->
+    <!--<link rel="stylesheet" href="css/b.page.css">-->
+    <!--<link rel="stylesheet" href="css/htmleaf-demo.css">-->
+    <!--<link rel="stylesheet" href="css/normalize.css">-->
+    <link rel="stylesheet" href="css/GridManager.css">
+    <title>Title</title>
+    <style>
+        /*loading*/
+        .table-wrap .loading {
+            z-index: 999;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            opacity: 0.7;
+        }
+
+        .table-wrap .loading .kernel {
+            width: 20px;
+            height: 20px;
+            border: 2px #4078c0 solid;
+            background-color: #fff;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            -webkit-animation: gm_fill_color 5s linear infinite;
+            -moz-animation: gm_fill_color 5s linear infinite;
+            animation: gm_fill_color 5s linear infinite;
+        }
+
+        .table-wrap .loading .kernel:after {
+            width: 4px;
+            height: 4px;
+            position: absolute;
+            content: "";
+            background-color: #4078c0;
+            top: -8px;
+            left: 0px;
+            -webkit-animation: gm_square_check 1s ease-in-out infinite;
+            -moz-animation: gm_square_check 1s ease-in-out infinite;
+            animation: gm_square_check 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML代码、服务端内容填充 -->
+    <!--<div id="pageContent"></div>-->
+    <!--<div id="page2"></div>-->
+    <div class="table-wrap">
+        <div class="loading">
+            <div class="kernel"></div>
+        </div>
+    </div>
+    <!--<script src="js/jquery-3.2.1.js"></script>-->
+    <!--<script src="js/d3.js"></script>-->
+    <!--<script src="js/b.page.js"></script>-->
+    <!--<script>-->
+        <!--//javascript初始化-->
+        <!--$('#page2').bPage({-->
+            <!--//链接指向服务端用于返回数据渲染页面的位置-->
+            <!--url : 'http://172.16.3.206/D3GeoJson/php/main.php?tablename=xiaoqu&page=10',-->
+            <!--//开启异步处理模式-->
+            <!--asyncLoad : true,-->
+            <!--//服务端页面处理模式-->
+            <!--serverSidePage : true,-->
+            <!--//页面填充目标区域，支持jquery表达式-->
+            <!--asyncTarget : '#pageContent',-->
+            <!--params : function(){-->
+                <!--return {-->
+                    <!--userName : 'zhangsan',-->
+                    <!--age : 42-->
+                <!--};-->
+            <!--}-->
+        <!--});-->
+    <!--</script>-->
+</body>
+</html>

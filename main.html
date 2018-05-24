@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="zh-Hans"> <!-- 繁体中文-->
+<html lang="zh-Hant"> <!-- 简体中文-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="paulhee">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,viewport-fit=cover, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+    <!-- 宽度为设备宽度，默认缩放比为 1,viewport-fit=cover 以兼容 iPhone X 全面屏“刘海”的显示 -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <!-- DNS 预读取是一项使浏览器主动去执行域名解析的功能，其范围包括当前文档内的所有链接，这能够减少用户点击链接时的延迟 -->
+    <!-- 预加载 指示浏览器预先请求当前页面所需要的关键性资源-->
+    <!-- <link rel="preload" href="/css/main.css" as="style"> -->
+    <!-- 预请求 指示浏览器预先请求用户即将浏览页面所需要的关键性资源。-->
+    <!--  <link rel="prefetch" href="/img/css-sprite.png"> -->
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/leaflet.draw.css">
+    <!--<link rel="stylesheet" href="css/leftsideBar.css">-->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="css/GridManager.css">
+    <link rel='stylesheet' href='css/mapbox-gl.css' />
+    <link rel="stylesheet" href="css/maptalks.css">
+    <title>D3GeoJsonTest</title>
+    <style>
+        #middle:hover{cursor: w-resize;}
+        #middle_arrow:hover{cursor: pointer;}
+        div.TOC ul,
+        div.TOC ul > li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        div.TOC ul > li > div {
+            border-bottom: 1px solid #c9c9c9;
+            text-decoration: none;
+            display:flex;
+            flex-direction:row;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            background: #6c6e74;
+            color: #fdfdfd;
+        }
+        /*区别大于号 空格的不同 有无更新 数字框设计*/
+        div.TOC ul > li > div span{
+            font: normal bold 12px/18px Arial, sans-serif;
+            border-radius: 15px;
+            padding: 0 10px;
+            background: #404247;
+            color: #fdfdfd;
+            text-shadow: 1px 1px 0px rgba(255,255,255, .2);
+            border: 1px solid #c9c9c9;
+            box-shadow: inset 1px 1px 1px rgba(0,0,0, .2), 1px 1px 1px rgba(255,255,255, .1);
+        }
+        div.TOC div.son {
+            border-bottom: 1px solid #c9c9c9;
+            text-decoration: none;
+            display: flex;
+            flex-direction: row;
+            justify-content:space-between;
+            align-items: center;
+            flex-wrap:wrap;
+            background: #e5e5e5 ;
+            color: #797979;
+        }
+        /*标题缩进*/
+        label.label_two {
+            flex: 0 0 1;
+            margin: 0 0 0 0px;
+        }
+        label.label_three{
+            flex: 0 0 1;
+            margin: 0 0 0 20px;
+        }
+        /*数据行样式 */
+        div.div_data{
+            flex: 0 0 1;
+            display: flex;
+            width: 40%;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        div.div_data>div{
+            flex: 0 0 1;display: flex;width: 50%;flex-direction: row; justify-content: space-between
+        }
+        div.div_data>div>i{
+            flex: 0 0 1;
+        }
+        /*设置鼠标样式*/
+        div.TOC div.father,
+        div.TOC div.father label,
+        i.fa-map,
+        i.fa-table{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="height: 100%;margin: 0;padding: 0;text-align: center;">
+    <header style="width:100%;height:50px;position:absolute;top:0;background-color: red"></header>
+    <div class="content" style="width: 100%;height: auto;position: absolute;top: 50px;bottom: 10px;display:-webkit-flex;display: flex;flex-direction: row;">
+        <div id="left" style="width:250px;overflow:scroll;min-width: 200px" >
+            <div name="modelsearch">
+                <input type="search" class="form-control" id="search-input" style="width:100%;padding-left: 30px;border-radius: 20px;" placeholder="搜索模型..." aria-label="搜索模型..." autocomplete="off">
+                <i class="fa fa-search" aria-hidden="true" style="position: absolute;display: inline-block;top:10px;left: 13px;font-size: 16px;color: #808080;transition: all 0.5s ease 0s;opacity: 1;"></i>
+            </div>
+            <div class="TOC">
+                <ul class="sub_menu">
+                    <li id="RealProperty">
+                        <div class="father">
+                            <label class="label_one">01 地产网</label>
+                            <span>无更新</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="father son">
+                                    <label class="label_two"><img src="imgs/lianjia.png">  链家</label>
+                                    <span>2</span>
+                                </div>
+                                <ul class="sub_menu" style="display: none;">
+                                    <li>
+                                        <div class="son">
+                                            <label class="label_three">新楼盘</label>
+                                            <div class="div_data">
+                                                <div>
+                                                    <i class="fa fa-table faa-tada animated-hover" onclick="table_load('loupan')" aria-hidden="true"></i>
+                                                    <i class="fa fa-map faa-tada animated-hover" onclick="lianjia('楼盘')" aria-hidden="true"></i>
+                                                </div>
+                                                <span>100</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="son">
+                                            <label class="label_three">小区</label>
+                                            <div class="div_data">
+                                                <div>
+                                                    <i class="fa fa-table faa-tada animated-hover" onclick="table_load('xiaoqu')" aria-hidden="true"></i>
+                                                    <i class="fa fa-map faa-tada animated-hover" onclick="lianjia('小区')" aria-hidden="true"></i>
+                                                </div>
+                                                <span>100</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two"><img src="imgs/gt.png">  CQ315HOUSE</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" onclick="CQ315HOUSE()" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two"><img src="imgs/gt.png">  全市建筑</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" onclick="building()" aria-hidden="true"></i>
+                                        </div>
+                                        <span>1</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="EcologyAndEnvironment">
+                        <div class="father">
+                            <label class="label_one">02 生态与环境</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">空气质量日报</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true" onclick="AQIFunction('cq_aq_daydata')"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">空气质量时报</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">天气实况</label>
+                                    <div class="div_data">
+                                        <div style="flex: 0 0 1;display: flex;width: 50%;flex-direction: row; justify-content: space-between">
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="POI">
+                        <div class="father" >
+                            <label class="label_one">03 POI</label>
+                            <span>3</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li >
+                                <div  class="son" >
+                                    <label class="label_two">中国POI</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son" >
+                                    <label class="label_two">
+                                        <i class="fa fa-paw" aria-hidden="true">百度POI</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son" >
+                                    <label class="label_two">高德POI</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="Traffic" >
+                        <div class="father">
+                            <label class="label_one">04 交通</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="father son">
+                                    <label class="label_two"><img src="imgs/realtraffic.png">  实时路况</label>
+                                    <span>2</span>
+                                </div>
+                                <ul class="sub_menu" style="display: none;">
+                                    <li>
+                                        <div class="son">
+                                            <label class="label_three">百度</label>
+                                            <div class="div_data">
+                                                <div>
+                                                    <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                                    <i class="fa fa-map faa-tada animated-hover" onclick="RealTimeTraffic('百度')" aria-hidden="true"></i>
+                                                </div>
+                                                <span>1</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="son">
+                                            <label class="label_three">高德</label>
+                                            <div class="div_data">
+                                                <div>
+                                                    <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                                    <i class="fa fa-map faa-tada animated-hover" onclick="RealTimeTraffic('高德')" aria-hidden="true"></i>
+                                                </div>
+                                                <span>1</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="son"  >
+                                    <label class="label_two">
+                                        <i class="fa fa-bus" aria-hidden="true" >公交站及线路</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" style="flex: 0 0 1;" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  style="flex: 0 0 1; " aria-hidden="true" onclick="RealTimeTraffic()"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son"  >
+                                    <label class="label_two">
+                                        <i class="fa fa-bus" aria-hidden="true" >滴滴</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" style="flex: 0 0 1;" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  style="flex: 0 0 1; " aria-hidden="true" onclick="DiDi('didi')"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son"  >
+                                    <label class="label_two">
+                                        <i class="fa fa-bus" aria-hidden="true" >游客轨迹</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" style="flex: 0 0 1;" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  style="flex: 0 0 1; " aria-hidden="true" onclick="guiji('guiji')"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="WeMedia" >
+                        <div class="father">
+                            <label class="label_one">05 自媒体</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">政府公开信箱</label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" onclick="publicmail()" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <i class="fa fa-weibo" aria-hidden="true" >微博</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son" >
+                                    <label class="label_two">
+                                        <i class="fa fa-weixin" aria-hidden="true" >微信</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <i class="fa fa-qq" aria-hidden="true" >QQ</i>
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="LifeService" >
+                        <div class="father">
+                            <label class="label_one">06 生活服务</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;" >
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/meituan.png">美团
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">大众点评
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">百度糯米
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">饿了么
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="Government" >
+                        <div class="father">
+                            <label class="label_one">06 政府网站</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/cqcg.png">政府采购网
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  aria-hidden="true"></i>
+                                        </div>
+                                        <span>10</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="population">
+                        <div class="father">
+                            <label class="label_one">07 人口模拟</label>
+                            <span>2</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;">
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/man_woman.png">人口流动
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  aria-hidden="true" onclick="population(this)" value="unchecked" ></i>
+                                        </div>
+                                        <span>10</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="Job" >
+                        <div class="father">
+                            <label class="label_one">06 招聘</label>
+                            <span>4</span>
+                        </div>
+                        <ul class="sub_menu" style="display: none;" >
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/meituan.png">前程无忧
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover"  aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">智联招聘
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">拉勾网
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="son">
+                                    <label class="label_two">
+                                        <img src="imgs/dianping.png">大街网
+                                    </label>
+                                    <div class="div_data">
+                                        <div>
+                                            <i class="fa fa-table faa-tada animated-hover" aria-hidden="true"></i>
+                                            <i class="fa fa-map faa-tada animated-hover" aria-hidden="true"></i>
+                                        </div>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="middle" style="display: flex; flex:0 0 2px;justify-content: center;align-items: center; background:#666; ">
+            <div id="middle_arrow" style="height: 20px;" onclick="middleclick()">
+                <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div id="right" style="flex: 1; ">
+            <div id="map" class="right" style="height: 100%;width: 100%;">
+                <div class="loading" style="position: relative;left: 50%;top: 50%;z-index: 9999;display: none;color:white;">
+                    <i class="fa fa-spinner fa-pulse fa-5x fa-fw" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div id="container_echarts" style="display: none;height: 100%;width: 100%;"></div>
+            <!--<div id="status" style="position:fixed;left:0px;top:0px;width:50%;height:140px;overflow:hidden"></div>-->
+            <div id="table" class="right" style="height: 100%;width: 100%;display: none;min-height: 100vh;flex-direction: column;">
+                <div class="loading" style="position: relative;left: 50%;top: 50%;z-index: 9999;display: none;color:white;">
+                    <i class="fa fa-spinner fa-pulse fa-5x fa-fw" aria-hidden="true"></i>
+                </div>
+                <table></table>
+                <!-- <table id="table-style" data-toggle="table table-hover" data-height="400" data-pagination="true" data-striped="true">
+                    <thead>
+                        <tr>
+                            
+                        </tr>
+                    </thead>
+                </table> -->
+            </div>
+        </div>
+    </div>
+    <footer style="width: 100%;height: 10px;position: absolute;bottom: 0;"></footer>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/coordtransform.js"></script>
+    <script src="js/d3.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.draw.js"></script>
+    <!--<script src="js/Leaflet.VectorGrid.js"></script>-->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/GridManager.js"></script>
+    <script src="js/echarts4.js"></script>
+    <script src="js/echarts-gl.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=wV3EGTsEkh4VHwGob2LR3KNvRddBWLws"></script>
+    <script src="js/bmap.js"></script>
+    <script src="js/leaflet-echarts.js"></script>
+    <script src='js/mapbox-gl.js'></script>
+    <script src="js/maptalks.min.js"></script>
+    <script src="js/maptalks.webgl.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
