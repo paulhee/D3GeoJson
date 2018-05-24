@@ -1519,7 +1519,7 @@ function guiji(tablename) {
     var taxiRoutes = [];
     var enteredDay='2018-05-01';
     $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
-        var mydata = JSON.parse(data);
+        var mydata = [JSON.parse(data)];
         // var responseJson = JSON.parse(data);
         // if(responseJson.status == 'success'){
         //     var trace = responseJson.data;
@@ -1677,7 +1677,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '巴渝民居馆',
-                            value:[106.447092798968,29.585918252941,30]
+                            value:[106.451073,29.583345,30]
                         }]
                     },
                     {
@@ -1708,7 +1708,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '宝善宫',
-                            value:[106.44728139929,29.5821828708554,30]
+                            value:[106.451261,29.579608,30]
                         }]
                     },
                     {
@@ -1739,7 +1739,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '磁器口牌坊',
-                            value:[106.448185244656,29.5814330127009,30]
+                            value:[106.452163,29.578856,30]
                         }]
                     },
                     {
@@ -1770,7 +1770,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '横街',
-                            value:[106.446506733396,29.5846164698294,30]
+                            value:[106.450488,29.582044,30]
                         }]
                     },
                     {
@@ -1801,7 +1801,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '老字号汇总',
-                            value:[106.448624971171,29.5840520801472,30]
+                            value:[106.452602,29.581475,30]
                         }]
                     },
                     {
@@ -1832,7 +1832,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '小重庆',
-                            value:[106.44883938047,29.5844743982304,30]
+                            value:[106.452816,29.581897,30]
                         }]
                     },
                     {
@@ -1863,7 +1863,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '鑫记杂货铺',
-                            value:[106.446595104185,29.5813697214482,30]
+                            value:[106.450576,29.578796,30]
                         }]
                     },
                     {
