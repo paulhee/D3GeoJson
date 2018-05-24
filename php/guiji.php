@@ -15,17 +15,21 @@
             $Onesql = "select * from " .$tablename ." where mac = '" .$row["mac"] ."' and enteredDay = '" .$enteredDay ."'";
             //echo $Onesql ."<br>";
             $result_One = $mysqli->query($Onesql);
+            $num_rows=mysqli_num_rows($result_One);
             $jwd=array();
             while($row1 = $result_One->fetch_assoc()){
                 $jwd[] = array(floatval($row1["jd"]),floatval($row1["wd"]));
             }
+            if($num_rows == 1){
+                $jwd[] = $jwd[0];
+            }
             $color=array('normal'=>array('color'=>'rgba(90,221,223,1)'));
-            $data[]=array('coords'=>$jwd,'lineStyle'=>$color);
+            $data[]=array('coords'=>$jwd,'lineStyle'=>$color);//
             //echo $Onesql ."<br>";
-            if($count == 10){
-                break;
-             }
-             $count = $count+1;
+            if($count == 1000){
+               break;
+            }
+            $count = $count+1;
     }
     $result_json = $data;//array('status'=>"success",'data' => $data)
     $mysqli->close();

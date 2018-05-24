@@ -1519,7 +1519,7 @@ function guiji(tablename) {
     var taxiRoutes = [];
     var enteredDay='2018-05-01';
     $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
-        var mydata = [JSON.parse(data)];
+        var mydata = JSON.parse(data);
         // var responseJson = JSON.parse(data);
         // if(responseJson.status == 'success'){
         //     var trace = responseJson.data;
@@ -1677,7 +1677,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '巴渝民居馆',
-                            value:[106.451073,29.583345,30]
+                            value:[106.457175,29.589819,30]
                         }]
                     },
                     {
@@ -1708,7 +1708,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '宝善宫',
-                            value:[106.451261,29.579608,30]
+                            value:[106.4577,29.585917,30]
                         }]
                     },
                     {
@@ -1739,7 +1739,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '磁器口牌坊',
-                            value:[106.452163,29.578856,30]
+                            value:[106.458603,29.585199,30]
                         }]
                     },
                     {
@@ -1770,7 +1770,7 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '横街',
-                            value:[106.450488,29.582044,30]
+                            value:[106.456806,29.588473,30]
                         }]
                     },
                     {
@@ -1801,11 +1801,11 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '老字号汇总',
-                            value:[106.452602,29.581475,30]
+                            value:[106.458913,29.587805,30]
                         }]
                     },
                     {
-                        name:'小重庆',
+                        name:'少妇尿童',
                         type: 'effectScatter',
                         coordinateSystem: 'bmap',
                         zlevel: 2,
@@ -1831,8 +1831,70 @@ function guiji(tablename) {
                             }
                         },
                         data: [{
-                            name: '小重庆',
-                            value:[106.452816,29.581897,30]
+                            name: '少妇尿童',
+                            value:[106.457673,29.588822,30]
+                        }]
+                    },
+                    {
+                        name:'西门',
+                        type: 'effectScatter',
+                        coordinateSystem: 'bmap',
+                        zlevel: 2,
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                formatter: '{b}'
+                            }
+                        },
+                        symbolSize: function(val) {
+                            return val[2] / 4;
+                        },
+                        showEffectOn: 'render',
+                        itemStyle: {
+                            normal: {
+                                color: '#ff2200',
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: [{
+                            name: '西门',
+                            value:[106.454655,29.584056,30]
+                        }]
+                    },
+                    {
+                        name:'小重庆碑',
+                        type: 'effectScatter',
+                        coordinateSystem: 'bmap',
+                        zlevel: 2,
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                formatter: '{b}'
+                            }
+                        },
+                        symbolSize: function(val) {
+                            return val[2] / 4;
+                        },
+                        showEffectOn: 'render',
+                        itemStyle: {
+                            normal: {
+                                color: '#ff2200',
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: [{
+                            name: '小重庆碑',
+                            value:[106.459155,29.58819,30]
                         }]
                     },
                     {
@@ -1863,7 +1925,38 @@ function guiji(tablename) {
                         },
                         data: [{
                             name: '鑫记杂货铺',
-                            value:[106.450576,29.578796,30]
+                            value:[106.456905,29.58512,30]
+                        }]
+                    },
+                    {
+                        name:'钟家大院',
+                        type: 'effectScatter',
+                        coordinateSystem: 'bmap',
+                        zlevel: 2,
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                formatter: '{b}'
+                            }
+                        },
+                        symbolSize: function(val) {
+                            return val[2] / 4;
+                        },
+                        showEffectOn: 'render',
+                        itemStyle: {
+                            normal: {
+                                color: '#ff2200',
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: [{
+                            name: '钟家大院',
+                            value:[106.458872,29.585784,30]
                         }]
                     },
                     {
@@ -1874,7 +1967,7 @@ function guiji(tablename) {
                         silent: true,
                         lineStyle: {
                             normal: {
-                                opacity: 0.3,
+                                opacity: 0.2,
                                 width: 1
                             }
                         },
@@ -1897,7 +1990,7 @@ function guiji(tablename) {
                             trailLength: 0.02,
                             symbolSize: 2
                         },
-                        zlevel: 1
+                        zlevel: 19891015
                     }
                 ]
             }
