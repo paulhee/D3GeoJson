@@ -23,10 +23,10 @@
             if($num_rows == 1){
                 $jwd[] = $jwd[0];
             }
-            $color=array('normal'=>array('color'=>'rgba(90,221,223,1)'));
-            $data[]=array('coords'=>$jwd,'lineStyle'=>$color);//
+            $color=array('normal'=>array('color'=>"rgba(200, 40, 0, 1)"));//"rgba(" .rand(1,255) ."," .rand(1,255) ."," .rand(1,255) .",1)"
+            $data[]=array('coords'=>$jwd,'lineStyle'=>$color);//'lonlat'=>$jwd,
             //echo $Onesql ."<br>";
-            if($count == 1000){
+            if($count == 100){
                break;
             }
             $count = $count+1;

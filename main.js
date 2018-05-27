@@ -1508,7 +1508,7 @@ function DiDi(tablename) {
     });
 }
 
-function guiji(tablename) {
+function guiji2(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
@@ -1968,7 +1968,7 @@ function guiji(tablename) {
                         lineStyle: {
                             normal: {
                                 opacity: 0.2,
-                                width: 1
+                                width: 2
                             }
                         },
                         progressiveThreshold: 500,
@@ -1988,7 +1988,8 @@ function guiji(tablename) {
                             constantSpeed: 40,
                             show: true,
                             trailLength: 0.02,
-                            symbolSize: 2
+                            symbolSize: 2,
+                            symbol: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z'
                         },
                         zlevel: 19891015
                     }
@@ -2004,8 +2005,7 @@ function guiji1(tablename) {
     $("#table").css('display',"none");
     var enteredDay='2018-05-01';
     $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
-        var responseJson = JSON.parse(data);
-        var mydata = responseJson.data;
+        var mydata = JSON.parse(data);
         //leaflet上使用echarts
         overlay = new L.echartsLayer(map, echarts);
         var chartsContainer = overlay.getEchartsContainer();
@@ -2074,7 +2074,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '巴渝民居馆',
-                        value:[106.447092798968,29.585918252941,30]
+                        value:[106.447092798968,29.585918252941,30],
+                        lonlat:[106.447092798968,29.585918252941,30]
                     }]
                 },
                 {
@@ -2105,7 +2106,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '宝善宫',
-                        value:[106.44728139929,29.5821828708554,30]
+                        value:[106.44728139929,29.5821828708554,30],
+                        lonlat:[106.44728139929,29.5821828708554,30]
                     }]
                 },
                 {
@@ -2136,7 +2138,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '磁器口牌坊',
-                        value:[106.448185244656,29.5814330127009,30]
+                        value:[106.448185244656,29.5814330127009,30],
+                        lonlat:[106.448185244656,29.5814330127009,30]
                     }]
                 },
                 {
@@ -2167,7 +2170,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '横街',
-                        value:[106.446506733396,29.5846164698294,30]
+                        value:[106.446506733396,29.5846164698294,30],
+                        lonlat:[106.446506733396,29.5846164698294,30]
                     }]
                 },
                 {
@@ -2198,7 +2202,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '老字号汇总',
-                        value:[106.448624971171,29.5840520801472,30]
+                        value:[106.448624971171,29.5840520801472,30],
+                        lonlat:[106.448624971171,29.5840520801472,30]
                     }]
                 },
                 {
@@ -2229,7 +2234,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '小重庆',
-                        value:[106.44883938047,29.5844743982304,30]
+                        value:[106.44883938047,29.5844743982304,30],
+                        lonlat:[106.44883938047,29.5844743982304,30]
                     }]
                 },
                 {
@@ -2260,7 +2266,8 @@ function guiji1(tablename) {
                     },
                     data: [{
                         name: '鑫记杂货铺',
-                        value:[106.446595104185,29.5813697214482,30]
+                        value:[106.446595104185,29.5813697214482,30],
+                        lonlat:[106.446595104185,29.5813697214482,30]
                     }]
                 },
                 {
@@ -2300,5 +2307,347 @@ function guiji1(tablename) {
         };
         // 使用刚指定的配置项和数据显示图表
         overlay.setOption(option);
+    });
+}
+
+function guiji(tablename) {
+    $("#map").css('display',"none");
+    $("#container_echarts").css('display',"block");
+    $("#table").css('display',"none");
+    var dom = document.getElementById("container_echarts");
+    var myChart = echarts.init(dom);
+    myChart.showLoading();
+    var enteredDay='2018-05-01';
+    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
+        var mydata = JSON.parse(data);
+        var option = {
+            maptalks3D: {
+                center: [106.456187, 29.587515],
+                zoom: 17,
+                // pitch: 55,
+                zoomControl : {
+                    'position'  : 'top-left',
+                    'slider'    : true,
+                    'zoomLevel' : true
+                },
+                layerSwitcherControl: {
+                    'position'  : 'top-right',
+                    // title of base layers
+                    'baseTitle' : 'Base Layers',
+                    // title of layers
+                    'overlayTitle' : 'Layers',
+                    // layers you don't want to manage with layer switcher
+                    'excludeLayers' : [],
+                    // css class of container element, maptalks-layer-switcher by default
+                    'containerClass' : 'maptalks-layer-switcher'
+                },
+                baseLayer: {
+                    'urlTemplate': 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+                    'subdomains': ['a', 'b', 'c', 'd']
+                },
+                altitudeScale: 2,
+                postEffect: {
+                    enable: true,
+                    FXAA: {
+                        enable: true
+                    }
+                },
+                light: {
+                    main: {
+                        intensity: 1,
+                        shadow: true,
+                        shadowQuality: 'high'
+                    },
+                    ambient: {
+                        intensity: 0.
+                    },
+                    ambientCubemap: {
+                        texture: './imgs/data-1491838644249-ry33I7YTe.hdr',
+                        exposure: 1,
+                        diffuseIntensity: 0.5,
+                        specularIntensity: 2
+                    }
+                },
+                layers : [
+                    // new maptalks.VectorLayer('v').addGeometry(zcq_maptalks)
+                    // new maptalks.TileLayer('road', {
+                    //     urlTemplate:'http://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png',
+                    //     subdomains:['a','b','c','d'],
+                    //     opacity:1
+                    // })
+                ]
+            },
+            series: [
+                {
+                    type: 'scatter3D',
+                    name:'巴渝民居馆',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '巴渝民居馆',
+                        value:[106.457175,29.589819,30]
+                    }]
+                },
+                {
+                    name:'宝善宫',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '宝善宫',
+                        value:[106.4577,29.585917,30]
+                    }]
+                },
+                {
+                    name:'磁器口牌坊',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '磁器口牌坊',
+                        value:[106.458603,29.585199,30]
+                    }]
+                },
+                {
+                    name:'横街',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '横街',
+                        value:[106.456806,29.588473,30]
+                    }]
+                },
+                {
+                    name:'老字号汇总',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '老字号汇总',
+                        value:[106.458913,29.587805,30]
+                    }]
+                },
+                {
+                    name:'少妇尿童',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '少妇尿童',
+                        value:[106.457673,29.588822,30]
+                    }]
+                },
+                {
+                    name:'西门',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '西门',
+                        value:[106.454655,29.584056,30]
+                    }]
+                },
+                {
+                    name:'小重庆碑',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '小重庆碑',
+                        value:[106.459155,29.58819,30]
+                    }]
+                },
+                {
+                    name:'鑫记杂货铺',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '鑫记杂货铺',
+                        value:[106.456905,29.58512,30]
+                    }]
+                },
+                {
+                    name:'钟家大院',
+                    type: 'scatter3D',
+                    coordinateSystem: 'maptalks3D',
+                    zlevel: 2,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'right',
+                            formatter: '{b}'
+                        }
+                    },
+                    symbolSize: function(val) {
+                        return val[2] / 4;
+                    },
+                    itemStyle: {
+                        color: 'rgb(50, 50, 150)',
+                        opacity: 1
+                    },
+                    data: [{
+                        name: '钟家大院',
+                        value:[106.458872,29.585784,30]
+                    }]
+                },
+                {
+                    type: 'lines3D',
+                    coordinateSystem: 'maptalks3D',
+                    effect: {
+                        show: true,
+                        constantSpeed: 5,
+                        trailWidth: 2,
+                        trailLength: 0.4,
+                        trailOpacity: 1,
+                        spotIntensity: 10
+                    },
+                    blendMode: 'lighter',//是叠加模式，该模式可以让数据集中的区域因为叠加而产生高亮的效果
+                    polyline: true,
+                    lineStyle: {
+                        width: 0.1,
+                        color: 'rgb(200, 40, 0)',
+                        opacity: 0.
+                    },
+                    data: mydata
+                }
+            ]
+        };
+        myChart.setOption(option);
+        var maptalksIns = myChart.getModel().getComponent('maptalks3D').getMaptalks();
+        maptalksIns.on('click', function(e) {
+            console.log(e)
+        });
+        myChart.hideLoading();
+    });
+    window.addEventListener('resize', function() {
+        myChart.resize();
     });
 }
