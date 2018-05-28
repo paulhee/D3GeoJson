@@ -46447,8 +46447,8 @@ var Maptalks3DModel = __WEBPACK_IMPORTED_MODULE_0_echarts_lib_echarts___default.
             // css class of container element, maptalks-layer-switcher by default
             'containerClass' : 'maptalks-layer-switcher'
         },
-        'urlTemplate': 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        'subdomains'  : ['a','b','c','d'],
+        'urlTemplate': 'http://www.google.cn/maps/vt?pb=!1m5!1m4!1i{z}!2i{x}!3i{y}!4i256!2m3!1e0!2sm!3i342009817!3m9!2sen-US!3sCN!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0&token=32965',
+         'subdomains'  : ['1','2','3','4'],
         // baseLayer: new maptalks.GroupTileLayer('Base TileLayer', [
         //     new maptalks.TileLayer('Carto light',{
         //         'visible' : false,

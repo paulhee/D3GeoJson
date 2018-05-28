@@ -317,7 +317,6 @@ $(function () {
     }
 });
 
-
 function table_load(tablename) {
     $(".loading").css("display","flex");//显示加载过程的图标
     $("#map").css('display',"none");
@@ -1508,6 +1507,7 @@ function DiDi(tablename) {
     });
 }
 
+//百度 echarts
 function guiji2(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
@@ -1518,7 +1518,7 @@ function guiji2(tablename) {
     myChart.showLoading();
     var taxiRoutes = [];
     var enteredDay='2018-05-01';
-    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
+    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_touristBD"+"&enteredDay="+enteredDay,function (data) {
         var mydata = JSON.parse(data);
         // var responseJson = JSON.parse(data);
         // if(responseJson.status == 'success'){
@@ -1999,7 +1999,7 @@ function guiji2(tablename) {
         myChart.hideLoading();
     });
 }
-
+//leaflet 未成功
 function guiji1(tablename) {
     $("#map").css('display',"block");
     $("#table").css('display',"none");
@@ -2309,7 +2309,7 @@ function guiji1(tablename) {
         overlay.setOption(option);
     });
 }
-
+//maptalks
 function guiji(tablename) {
     $("#map").css('display',"none");
     $("#container_echarts").css('display',"block");
@@ -2318,12 +2318,12 @@ function guiji(tablename) {
     var myChart = echarts.init(dom);
     myChart.showLoading();
     var enteredDay='2018-05-01';
-    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
+    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_touristWGS"+"&enteredDay="+enteredDay,function (data) {
         var mydata = JSON.parse(data);
         var option = {
             maptalks3D: {
-                center: [106.456187, 29.587515],
-                zoom: 17,
+                center: [106.4473,29.5823],
+                zoom: 16,
                 // pitch: 55,
                 zoomControl : {
                     'position'  : 'top-left',
@@ -2387,19 +2387,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '巴渝民居馆',
-                        value:[106.457175,29.589819,30]
+                        value:[106.44677323249758,29.586121837686434,5]
                     }]
                 },
                 {
@@ -2411,19 +2413,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '宝善宫',
-                        value:[106.4577,29.585917,30]
+                        value:[106.44729425116597,29.58222586360869,5]
                     }]
                 },
                 {
@@ -2435,19 +2439,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '磁器口牌坊',
-                        value:[106.458603,29.585199,30]
+                        value:[106.44819596057485,29.58151843384318,5]
                     }]
                 },
                 {
@@ -2459,19 +2465,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '横街',
-                        value:[106.456806,29.588473,30]
+                        value:[106.44640314741744,29.58477192565061,5]
                     }]
                 },
                 {
@@ -2483,19 +2491,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '老字号汇总',
-                        value:[106.458913,29.587805,30]
+                        value:[106.44850820027501,29.584128066314076,5]
                     }]
                 },
                 {
@@ -2507,19 +2517,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '少妇尿童',
-                        value:[106.457673,29.588822,30]
+                        value:[106.44727002270676,29.585130420427358,5]
                     }]
                 },
                 {
@@ -2531,19 +2543,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '西门',
-                        value:[106.454655,29.584056,30]
+                        value:[106.44424852005132,29.580334126231094,5]
                     }]
                 },
                 {
@@ -2555,19 +2569,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '小重庆碑',
-                        value:[106.459155,29.58819,30]
+                        value:[106.44875036815979,29.58451602985505,5]
                     }]
                 },
                 {
@@ -2579,19 +2595,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '鑫记杂货铺',
-                        value:[106.456905,29.58512,30]
+                        value:[106.44649891688616,29.58142014221494,5]
                     }]
                 },
                 {
@@ -2603,19 +2621,21 @@ function guiji(tablename) {
                         normal: {
                             show: true,
                             position: 'right',
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            textStyle:{
+                                color:'#000000',
+                                fontWeight:'bolder'
+                            }
                         }
                     },
-                    symbolSize: function(val) {
-                        return val[2] / 4;
-                    },
+                    symbolSize: 10,
                     itemStyle: {
-                        color: 'rgb(50, 50, 150)',
-                        opacity: 1
+                        color: [1,1,1,1],
+                        opacity: 0.8
                     },
                     data: [{
                         name: '钟家大院',
-                        value:[106.458872,29.585784,30]
+                        value:[106.44846531130852,29.582106661238353,5]
                     }]
                 },
                 {
