@@ -1518,7 +1518,7 @@ function guiji(tablename) {
     myChart.showLoading();
     var taxiRoutes = [];
     var enteredDay='2018-05-01';
-    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_touristBD"+"&enteredDay="+enteredDay,function (data) {
+    $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_people_time"+"&enteredDay="+enteredDay,function (data) {
         var mydata = JSON.parse(data);
         // var responseJson = JSON.parse(data);
         // if(responseJson.status == 'success'){

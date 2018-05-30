@@ -2,11 +2,11 @@
     set_time_limit(0);
     $tablename=$_GET["tablename"];//表名称
     $enteredDay=$_GET["enteredDay"];
-    $mysqli = new mysqli("localhost","root","admin","bigdata");
+    $mysqli = new mysqli("172.16.4.206:3306","root","admin","bigdata");
     if(!$mysqli){
         die('Could not connect:'.mysql_error());
     }
-    $distinctIDsql = "select DISTINCT mac from " .$tablename ." where enteredDay = '" .$enteredDay ."'";//查询全部数据
+    $distinctIDsql = "select DISTINCT mac from " .$tablename ." where people='4' and enteredDay = '" .$enteredDay ."'";//查询全部数据
     $result_ID = $mysqli->query($distinctIDsql);
     //echo $distinctIDsql ."<br>";
     $data = array();
