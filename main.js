@@ -1508,7 +1508,7 @@ function DiDi(tablename) {
 }
 
 //百度 echarts
-function guiji(tablename) {
+function guiji1(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
@@ -1988,8 +1988,7 @@ function guiji(tablename) {
                             constantSpeed: 40,
                             show: true,
                             trailLength: 0.02,
-                            symbolSize: 3,
-                            // symbol: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z'
+                            symbolSize: 4
                         },
                         zlevel: 19891015
                     }
@@ -2670,4 +2669,246 @@ function guiji2(tablename) {
     window.addEventListener('resize', function() {
         myChart.resize();
     });
+}
+//mapv
+function guiji(tablename) {
+    $("#map").css('display',"none");
+    // $("#map").empty();
+    $("#container_echarts").css('display',"block");
+    $("#table").css('display',"none");
+    var enteredDay='2018-05-01';
+    $.post("./php/guiji_mapv.php?tablename="+"realtimedata_201805_merge_people_time"+"&enteredDay="+enteredDay,function (data) {
+        var driveData = JSON.parse(data);
+        // // 添加时间戳
+        // for (var i = 0; i < driveData.length; i++) {
+        //     var geo = driveData[i].geo;
+        //     for (var j = 0; j < geo.length; j++) {
+        //         geo[j].push(new Date().getTime() / 1000 + 10 * 60 * j);
+        //     }
+        // }
+        var bmap = new BMap.Map('container_echarts', {
+            enableMapClick: false,
+            // minZoom: 4
+            //vectorMapLevel: 3
+        });
+        bmap.enableScrollWheelZoom();
+        bmap.setMapStyle({
+            styleJson: [{
+                featureType: 'water',
+                elementType: 'all',
+                stylers: {
+                    color: '#044161'
+                }
+            }, {
+                featureType: 'land',
+                elementType: 'all',
+                stylers: {
+                    color: '#091934'
+                }
+            }, {
+                featureType: 'boundary',
+                elementType: 'geometry',
+                stylers: {
+                    color: '#064f85'
+                }
+            }, {
+                featureType: 'railway',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'highway',
+                elementType: 'geometry',
+                stylers: {
+                    color: '#004981'
+                }
+            }, {
+                featureType: 'highway',
+                elementType: 'geometry.fill',
+                stylers: {
+                    color: '#005b96',
+                    lightness: 1
+                }
+            }, {
+                featureType: 'highway',
+                elementType: 'labels',
+                stylers: {
+                    visibility: 'on'
+                }
+            }, {
+                featureType: 'arterial',
+                elementType: 'geometry',
+                stylers: {
+                    color: '#004981',
+                    lightness: -39
+                }
+            }, {
+                featureType: 'arterial',
+                elementType: 'geometry.fill',
+                stylers: {
+                    color: '#00508b'
+                }
+            }, {
+                featureType: 'poi',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'green',
+                elementType: 'all',
+                stylers: {
+                    color: '#056197',
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'subway',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'manmade',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'local',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'arterial',
+                elementType: 'labels',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'boundary',
+                elementType: 'geometry.fill',
+                stylers: {
+                    color: '#029fd4'
+                }
+            }, {
+                featureType: 'building',
+                elementType: 'all',
+                stylers: {
+                    color: '#1a5787'
+                }
+            }, {
+                featureType: 'label',
+                elementType: 'all',
+                stylers: {
+                    visibility: 'off'
+                }
+            }, {
+                featureType: 'poi',
+                elementType: 'labels.text.fill',
+                stylers: {
+                    color: '#ffffff'
+                }
+            }, {
+                featureType: 'poi',
+                elementType: 'labels.text.stroke',
+                stylers: {
+                    color: '#1e1c1c'
+                }
+            }]
+        });
+        bmap.centerAndZoom(new BMap.Point(106.456187, 29.587515), 17); // 初始化地图,设置中心点坐标和地图级别
+        // 第一步创建mapv示例
+        var mapv = new Mapv({
+            drawTypeControl: true,
+            map: bmap  // 百度地图的map实例
+        });
+
+        var layer = new Mapv.Layer({
+            zIndex: 1,
+            mapv: mapv,
+            dataType: 'polyline',
+            coordType: 'bd09ll',
+            data: driveData,
+            drawType: 'simple',
+            drawOptions: {
+                lineWidth: 1,
+                shadowBlur: 10,
+                shadowColor: "rgba(250, 255, 0, 1)",
+                strokeStyle: "rgba(250, 250, 0, 2)"
+            },
+            animation: 'time',
+            animationOptions: {
+                //scope: 60 * 60 * 3,
+                size: 5,
+                duration: 10000, // 动画时长, 单位毫秒
+                fps: 20,         // 每秒帧数
+                transition: "linear",
+            }
+            // animation: true,
+            // animationOptions: {
+            //     size: 1
+            // }
+        });
+        layer.setMapv(mapv);
+        var poitlayer = new Mapv.Layer({
+            //mapv: mapv, // 对应的mapv实例
+            zIndex: 1, // 图层层级
+            dataType: 'point', // 数据类型，点类型
+            data: [{
+                lng:106.457175,
+                lat:29.589819,
+                count:10
+            },{
+                lng:106.4577,
+                lat:29.585917,
+                count:30
+            },{
+                lng:106.458603,
+                lat:29.585199,
+                count:30
+            },{
+                lng:106.456806,
+                lat:29.588473,
+                count:30
+            },{
+                lng:106.458913,
+                lat:29.587805,
+                count:30
+            },{
+                lng:106.457673,
+                lat:29.588822,
+                count:30
+            },{
+                lng:106.454655,
+                lat:29.584056,
+                count:30
+            },{
+                lng:106.459155,
+                lat:29.58819,
+                count:30
+            },{
+                lng:106.456905,
+                lat:29.58512,
+                count:30
+            },{
+                lng:106.458872,
+                lat:29.585784,
+                count:30
+            }], // 数据
+            dataRangeControl: false, // 值阈控件
+            drawType: 'simple', // 展示形式
+            drawOptions: { // 绘制参数
+                fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色
+                //strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色
+                //lineWidth: 4, // 描边宽度
+                shadowColor: 'rgba(255, 255, 255, 1)', // 投影颜色
+                shadowBlur: 35,  // 投影模糊级数
+                globalCompositeOperation: 'lighter', // 颜色叠加方式
+                size: 5 // 半径
+            }
+        });
+        poitlayer.setMapv(mapv);
+    })
 }
