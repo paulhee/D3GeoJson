@@ -26,7 +26,7 @@
             $color=array('normal'=>array('color'=>"rgba(200, 40, 0, 1)"));//"rgba(" .rand(1,255) ."," .rand(1,255) ."," .rand(1,255) .",1)"
             $data[]=array('coords'=>$jwd,'lineStyle'=>$color);//'lonlat'=>$jwd,
             //echo $Onesql ."<br>";
-            if($count == 100){
+            if($count == 5000){
                break;
             }
             $count = $count+1;
