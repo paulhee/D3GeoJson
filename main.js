@@ -720,7 +720,8 @@ function loadgeojson(jsonpath) {
     });
 }
 
-function AQIFunction(tablename){
+//leaflet+echarts
+function AQIFunction1(tablename){
     $("#map").css('display',"block");
     // $("#map").empty();
     // mapStuff = initDemoMap();
@@ -763,7 +764,7 @@ function AQIFunction(tablename){
                 }
             },
             title: {
-                text: '重庆市空气质量',
+                text: '重庆市空气质量日报',
                 subtext: 'Develop By paulhee',
                 sublink :'https://www.didiaosuo.com',
                 left: 'center',
@@ -817,6 +818,110 @@ function AQIFunction(tablename){
         };
     // 使用刚指定的配置项和数据显示图表
         overlay.setOption(option);
+    })
+}
+//echarts
+function AQIFunction(tablename){
+    $("#map").css('display',"none");
+    // $("#map").empty();
+    $("#container_echarts").css('display',"block");
+    $("#table").css('display',"none");
+    var dom = document.getElementById("container_echarts");
+    var myChart = echarts.init(dom);
+    myChart.showLoading();
+    $.post("./php/AQI.php?tablename="+tablename+"&datetime=2018-04-25",function (data) {
+        var responseJson = JSON.parse(data);
+        var seriesdata = new Array();
+        for (var i =0;i<responseJson.data.length;i++){
+            var item = responseJson.data[i];
+            var StationName = item['StationName'];
+            var AQI = item['AQI'];
+            var X = item['X'];
+            var Y = item['Y'];
+            AQI = parseFloat(AQI);
+            X = parseFloat(X);
+            Y = parseFloat(Y);
+            if (isNaN(AQI)){
+                AQI = 0;
+            }
+            if (isNaN(X) || isNaN(Y)) {
+                continue;
+            }
+            seriesdata.push([X,Y,AQI]);
+        };
+        option = {
+            // baseOption:{
+            //     timeline:{
+            //         axisType:'',
+            //         autoPlay:true,
+            //         playInterval: 1000
+            //     }
+            // },
+            title: {
+                text: '重庆市空气质量日报',
+                subtext: 'Develop By paulhee',
+                sublink :'https://www.didiaosuo.com',
+                left: 'center',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            backgroundColor: 'rgba(64,74,89,0.5)',
+            // geo: {
+            //     map: '',
+            //     label: {
+            //         emphasis: {
+            //             show: false
+            //         }
+            //     },
+            //     roam: true,//是否开启鼠标缩放和平移漫游
+            //     itemStyle: {
+            //         normal: {
+            //             areaColor: '#323c48',
+            //             borderColor: '#404a59'
+            //         },
+            //         emphasis: {
+            //             areaColor: '#2a333d'
+            //         }
+            //     }
+            // },
+            bmap: {
+                center: [106.55659,29.562201],
+                zoom: 8,
+                roam: true
+            },
+            visualMap:{
+                // pieces: [
+                //     {min: 300, label: '严重污染'},            // (300, Infinity]
+                //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
+                //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
+                //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
+                //     {min: 50, max: 100, label: '良'},   // (50, 100]
+                //     {min: 0, max: 50, label: '优'}       // (0, 50]
+                // ],
+                min: 0,
+                max: 500,
+                splitNumber: 5,
+                inRange: {
+                    color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+                },
+                textStyle: {
+                    color: '#fff'
+                },
+                right:5
+            },
+            series: [{
+                name:'AQI',
+                type: 'heatmap',
+                coordinateSystem: 'bmap',
+                data:seriesdata,
+                zlevel:19891015
+            }]
+        };
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+        myChart.hideLoading();
     })
 }
 
