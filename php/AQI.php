@@ -5,14 +5,27 @@
     if(!$mysqli){
         die('Could not connect:'.mysql_error());
     }
-    $sql = "select * from `" .$tablename ."` where `时间` like '%" .$datetime ."%'";//查询
-    // $sql = "select * from " .$tablename;//查询全部数据
-    $result = $mysqli->query($sql);
-    $data = array();
-    while($row = $result->fetch_assoc()){
-        $data[] = $row;
+    for ($i=1; $i<=30; $i++)
+    {
+        if ($i < 10){
+            $datetimestr = $datetime .'-0' .strval($i);
+            $sql = "select 时间,AQI,X,Y,COP,NO2P from `" .$tablename ."` where `时间` like '%" .$datetime .'-0' .strval($i) ."%'";//查询
+            //echo $sql ."<br>";
+        }
+        else {
+            $datetimestr = $datetime .'-' .strval($i);
+            $sql = "select 时间,AQI,X,Y,COP,NO2P from `" .$tablename ."` where `时间` like '%" .$datetime .'-' .strval($i) ."%'";//查询
+            //echo $sql ."<br>";
+        }
+
+        // $sql = "select * from " .$tablename;//查询全部数据
+        $result = $mysqli->query($sql);
+        $data = array();
+        while($row = $result->fetch_assoc()){
+            $data[] = $row;
+        }
+        $result_json[] = array('status'=>"success","datetime"=>$datetimestr,'data' => $data);
     }
-    $result_json = array('status'=>"success",'data' => $data);
     $mysqli->close();
     //输出响应
     //echo json_encode($arr);

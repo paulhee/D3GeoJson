@@ -828,101 +828,354 @@ function AQIFunction(tablename){
     $("#table").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    app.title = '重庆市空气质量热力图';
     myChart.showLoading();
-    $.post("./php/AQI.php?tablename="+tablename+"&datetime=2018-04-25",function (data) {
-        var responseJson = JSON.parse(data);
-        var seriesdata = new Array();
-        for (var i =0;i<responseJson.data.length;i++){
-            var item = responseJson.data[i];
-            var StationName = item['StationName'];
-            var AQI = item['AQI'];
-            var X = item['X'];
-            var Y = item['Y'];
-            AQI = parseFloat(AQI);
-            X = parseFloat(X);
-            Y = parseFloat(Y);
-            if (isNaN(AQI)){
-                AQI = 0;
+    $.get('Data/cq_qx2000.json', function (myJson){
+        echarts.registerMap('MY', myJson) //注册
+        var timelist=[];
+        for (var i=1;i<31;i++){
+            if (i < 10){
+                timelist.push('04-0'+i.toString());
             }
-            if (isNaN(X) || isNaN(Y)) {
-                continue;
+            else {
+                timelist.push('04-'+i.toString());
             }
-            seriesdata.push([X,Y,AQI]);
-        };
-        option = {
-            // baseOption:{
-            //     timeline:{
-            //         axisType:'',
-            //         autoPlay:true,
-            //         playInterval: 1000
-            //     }
-            // },
-            title: {
-                text: '重庆市空气质量日报',
-                subtext: 'Develop By paulhee',
-                sublink :'https://www.didiaosuo.com',
-                left: 'center',
-                textStyle: {
-                    color: '#fff'
+
+        }
+        var mydatetime ='2018-04';
+        $.post("./php/AQI.php?tablename="+tablename+"&datetime="+mydatetime,function (data) {
+            var option ={
+                baseOption:{
+                    timeline: {
+                        axisType: 'category',
+                        orient: 'vertical',
+                        autoPlay: true,
+                        inverse: true,
+                        playInterval: 1000,
+                        left: null,
+                        right: 30,
+                        top: 50,
+                        bottom: 20,
+                        width: 55,
+                        height: null,
+                        label: {
+                            normal: {
+                                textStyle: {
+                                    color: '#ddd'
+                                }
+                            },
+                            emphasis: {
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        symbol: 'circle',
+                        lineStyle: {
+                            color: '#555'
+                        },
+                        checkpointStyle: {
+                            color: '#bbb',
+                            borderColor: '#777',
+                            borderWidth: 2
+                        },
+                        controlStyle: {
+                            showNextBtn: false,
+                            showPrevBtn: false,
+                            normal: {
+                                color: '#666',
+                                borderColor: '#666'
+                            },
+                            emphasis: {
+                                color: '#aaa',
+                                borderColor: '#aaa'
+                            }
+                        },
+                        data: timelist
+                    },
+                    title: {
+                        text: '重庆市空气质量AQI热力图',
+                        subtext: 'Develop By paulhee',
+                        sublink :'https://www.didiaosuo.com',
+                        left: 'center',
+                        textStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    backgroundColor: 'rgba(64,74,89,0.8)',
+                    // geo: {
+                    //     map: '',
+                    //     label: {
+                    //         emphasis: {
+                    //             show: false
+                    //         }
+                    //     },
+                    //     roam: true,//是否开启鼠标缩放和平移漫游
+                    //     itemStyle: {
+                    //         normal: {
+                    //             areaColor: '#323c48',
+                    //             borderColor: '#404a59'
+                    //         },
+                    //         emphasis: {
+                    //             areaColor: '#2a333d'
+                    //         }
+                    //     }
+                    // },
+                    bmap: {
+                        center: [107.72009,29.871354],
+                        zoom: 8.5,
+                        roam: true
+                    },
+                    // visualMap:{
+                    //     // pieces: [
+                    //     //     {min: 300, label: '严重污染'},            // (300, Infinity]
+                    //     //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
+                    //     //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
+                    //     //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
+                    //     //     {min: 50, max: 100, label: '良'},   // (50, 100]
+                    //     //     {min: 0, max: 50, label: '优'}       // (0, 50]
+                    //     // ],
+                    //     min: 0,
+                    //     max: 500,
+                    //     splitNumber: 5,
+                    //     // inRange: {
+                    //     //     color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+                    //     // },
+                    //     color: ['#A3E00B', '#E09107', '#E0022B'],
+                    //     textStyle: {
+                    //         color: '#fff'
+                    //     },
+                    //     right:5
+                    // },
+                    visualMap: {
+                        left:5,
+                        top:1,
+                        min: 0,
+                        max: 500,
+                        seriesIndex: 0,
+                        calculable: true,
+                        inRange: {
+                            color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+                        }
+                    },
+                    series: [
+                        {
+                            name:'AQI',
+                            type: 'heatmap',
+                            coordinateSystem: 'bmap',
+                            data:[],//seriesdata
+                            zlevel:19891015
+                        },
+                        {
+                            name:'cq_map',
+                            type: 'map',
+                            map: 'MY',
+                            roam:true,
+                            itemStyle:{
+                                normal:{
+                                    opacity:0.5,
+                                    borderWidth:2,
+                                    borderColor:'#cccccc',
+                                    areaColor:'rgba(128, 128, 128, 0)',
+                                }
+                            },
+                            emphasis:{
+                                itemStyle:{
+
+                                }
+                            },
+                            zlevel:19891010
+                        }]
+                },
+                options:[]
+            };
+            var responseJson = JSON.parse(data);
+            for (var i =0;i<responseJson.length;i++){
+                var seriesdata = new Array();
+                for(var j =0;j<responseJson[i].data.length;j++){
+                    var item = responseJson[i].data[j];
+                    var StationName = item['StationName'];
+                    var AQI = item['AQI'];
+                    var X = item['X'];
+                    var Y = item['Y'];
+                    AQI = parseFloat(AQI);
+                    X = parseFloat(X);
+                    Y = parseFloat(Y);
+                    if (isNaN(AQI)){
+                        AQI = 0;
+                    }
+                    if (isNaN(X) || isNaN(Y)) {
+                        continue;
+                    }
+                    seriesdata.push([X,Y,AQI]);
                 }
-            },
-            backgroundColor: 'rgba(64,74,89,0.5)',
-            // geo: {
-            //     map: '',
-            //     label: {
-            //         emphasis: {
-            //             show: false
-            //         }
-            //     },
-            //     roam: true,//是否开启鼠标缩放和平移漫游
-            //     itemStyle: {
-            //         normal: {
-            //             areaColor: '#323c48',
-            //             borderColor: '#404a59'
+                option.options.push({
+                    title: {
+                        text: responseJson[i].datetime+'重庆市空气质量AQI热力图'
+                    },
+                    series: {
+                        data: seriesdata
+                    }
+                });
+            };
+            myChart.setOption(option);
+
+            // myChart.setOption(
+            //     option = {
+            //         timeline: {
+            //             axisType: 'category',
+            //             orient: 'vertical',
+            //             autoPlay: false,
+            //             inverse: true,
+            //             playInterval: 1000,
+            //             left: null,
+            //             right: 10,
+            //             top: 20,
+            //             bottom: 20,
+            //             width: 55,
+            //             height: null,
+            //             label: {
+            //                 normal: {
+            //                     textStyle: {
+            //                         color: '#ddd'
+            //                     }
+            //                 },
+            //                 emphasis: {
+            //                     textStyle: {
+            //                         color: '#fff'
+            //                     }
+            //                 }
+            //             },
+            //             symbol: 'none',
+            //             lineStyle: {
+            //                 color: '#555'
+            //             },
+            //             checkpointStyle: {
+            //                 color: '#bbb',
+            //                 borderColor: '#777',
+            //                 borderWidth: 2
+            //             },
+            //             controlStyle: {
+            //                 showNextBtn: false,
+            //                 showPrevBtn: false,
+            //                 normal: {
+            //                     color: '#666',
+            //                     borderColor: '#666'
+            //                 },
+            //                 emphasis: {
+            //                     color: '#aaa',
+            //                     borderColor: '#aaa'
+            //                 }
+            //             },
+            //             data: timelist
             //         },
-            //         emphasis: {
-            //             areaColor: '#2a333d'
-            //         }
+            //         title: {
+            //             text: '重庆市空气质量AQI热力图',
+            //             subtext: 'Develop By paulhee',
+            //             sublink :'https://www.didiaosuo.com',
+            //             left: 'center',
+            //             textStyle: {
+            //                 color: '#fff'
+            //             }
+            //         },
+            //         backgroundColor: 'rgba(64,74,89,0.8)',
+            //         // geo: {
+            //         //     map: '',
+            //         //     label: {
+            //         //         emphasis: {
+            //         //             show: false
+            //         //         }
+            //         //     },
+            //         //     roam: true,//是否开启鼠标缩放和平移漫游
+            //         //     itemStyle: {
+            //         //         normal: {
+            //         //             areaColor: '#323c48',
+            //         //             borderColor: '#404a59'
+            //         //         },
+            //         //         emphasis: {
+            //         //             areaColor: '#2a333d'
+            //         //         }
+            //         //     }
+            //         // },
+            //         bmap: {
+            //             center: [107.72009,29.871354],
+            //             zoom: 8.5,
+            //             roam: true
+            //         },
+            //         // visualMap:{
+            //         //     // pieces: [
+            //         //     //     {min: 300, label: '严重污染'},            // (300, Infinity]
+            //         //     //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
+            //         //     //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
+            //         //     //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
+            //         //     //     {min: 50, max: 100, label: '良'},   // (50, 100]
+            //         //     //     {min: 0, max: 50, label: '优'}       // (0, 50]
+            //         //     // ],
+            //         //     min: 0,
+            //         //     max: 500,
+            //         //     splitNumber: 5,
+            //         //     // inRange: {
+            //         //     //     color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+            //         //     // },
+            //         //     color: ['#A3E00B', '#E09107', '#E0022B'],
+            //         //     textStyle: {
+            //         //         color: '#fff'
+            //         //     },
+            //         //     right:5
+            //         // },
+            //         visualMap: {
+            //             right:5,
+            //             min: 0,
+            //             max: 500,
+            //             seriesIndex: 0,
+            //             calculable: true,
+            //             inRange: {
+            //                 color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+            //             }
+            //         },
+            //         series: [
+            //         {
+            //             name:'AQI',
+            //             type: 'heatmap',
+            //             coordinateSystem: 'bmap',
+            //             data:seriesdata,
+            //             zlevel:19891015
+            //         },
+            //         {
+            //             name:'cq_map',
+            //             type: 'map',
+            //             map: 'MY',
+            //             roam:true,
+            //             itemStyle:{
+            //                 normal:{
+            //                     opacity:0.5,
+            //                     borderWidth:2,
+            //                     borderColor:'#cccccc',
+            //                     areaColor:'rgba(128, 128, 128, 0)',
+            //                 }
+            //             },
+            //             emphasis:{
+            //                 itemStyle:{
+            //
+            //                 }
+            //             },
+            //             zlevel:19891010
+            //         }]
             //     }
-            // },
-            bmap: {
-                center: [106.55659,29.562201],
-                zoom: 8,
-                roam: true
-            },
-            visualMap:{
-                // pieces: [
-                //     {min: 300, label: '严重污染'},            // (300, Infinity]
-                //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
-                //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
-                //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
-                //     {min: 50, max: 100, label: '良'},   // (50, 100]
-                //     {min: 0, max: 50, label: '优'}       // (0, 50]
-                // ],
-                min: 0,
-                max: 500,
-                splitNumber: 5,
-                inRange: {
-                    color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
-                },
-                textStyle: {
-                    color: '#fff'
-                },
-                right:5
-            },
-            series: [{
-                name:'AQI',
-                type: 'heatmap',
-                coordinateSystem: 'bmap',
-                data:seriesdata,
-                zlevel:19891015
-            }]
-        };
+            // );
+            // if (!app.inNode) {
+            //     // 添加百度地图插件
+            //     var bmap = myChart.getModel().getComponent('bmap').getBMap();
+            //     bmap.addControl(new BMap.MapTypeControl());
+            // }
+            myChart.hideLoading();
+        });
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
         }
-        myChart.hideLoading();
-    })
+    });
 }
 
 //动态数据接入
@@ -1510,9 +1763,10 @@ function DiDi(tablename) {
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
     $("#table").css('display',"none");
-    var dom = document.getElementById("container_echarts");
-    var myChart = echarts.init(dom);
-    myChart.showLoading();
+    //加载按钮，有问题
+    // var dom = document.getElementById("container_echarts");
+    // var myChart = echarts.init(dom);
+    // myChart.showLoading();
     var taxiRoutes = [];
     $.get('Data/cq_qx2000.json', function (myJson){
         $.post("./php/didi.php?tablename="+tablename,function (data) {
@@ -1524,132 +1778,153 @@ function DiDi(tablename) {
             });
             bmap.enableScrollWheelZoom();
             bmap.setMapStyle({
-                styleJson: [{
-                    featureType: 'water',
-                    elementType: 'all',
-                    stylers: {
-                        color: '#044161'
+                styleJson: [
+                    {
+                        featureType: 'water',
+                        elementType: 'all',
+                        stylers: {
+                            color: '#044161'
+                        }
+                    },
+                    {
+                        featureType: 'land',
+                        elementType: 'all',
+                        stylers: {
+                            color: '#091934'
+                        }
+                    },
+                    {
+                        featureType: 'boundary',
+                        elementType: 'geometry',
+                        stylers: {
+                            color: '#064f85'
+                        }
+                    },
+                    {
+                        featureType: 'railway',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'highway',
+                        elementType: 'geometry',
+                        stylers: {
+                            color: '#004981'
+                        }
+                    },
+                    {
+                        featureType: 'highway',
+                        elementType: 'geometry.fill',
+                        stylers: {
+                            color: '#005b96',
+                            lightness: 1
+                        }
+                    },
+                    {
+                        featureType: 'highway',
+                        elementType: 'labels',
+                        stylers: {
+                            visibility: 'on'
+                        }
+                    },
+                    {
+                        featureType: 'arterial',
+                        elementType: 'geometry',
+                        stylers: {
+                            color: '#004981',
+                            lightness: -39
+                        }
+                    },
+                    {
+                        featureType: 'arterial',
+                        elementType: 'geometry.fill',
+                        stylers: {
+                            color: '#00508b'
+                        }
+                    },
+                    {
+                        featureType: 'poi',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'on'
+                        }
+                    },
+                    {
+                        featureType: 'green',
+                        elementType: 'all',
+                        stylers: {
+                            color: '#056197',
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'subway',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'manmade',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'local',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'arterial',
+                        elementType: 'labels',
+                        stylers: {
+                            visibility: 'off'
+                        }
+                    },
+                    {
+                        featureType: 'boundary',
+                        elementType: 'geometry.fill',
+                        stylers: {
+                            color: '#029fd4'
+                        }
+                    },
+                    {
+                        featureType: 'building',
+                        elementType: 'all',
+                        stylers: {
+                            color: '#1a5787'
+                        }
+                    },
+                    {
+                        featureType: 'label',
+                        elementType: 'all',
+                        stylers: {
+                            visibility: 'on'
+                        }
+                    },
+                    {
+                        featureType: 'poi',
+                        elementType: 'labels.text.fill',
+                        stylers: {
+                            color: '#ffffff'
+                        }
+                    },
+                    {
+                        featureType: 'poi',
+                        elementType: 'labels.text.stroke',
+                        stylers: {
+                            color: '#1e1c1c'
+                        }
                     }
-                }, {
-                    featureType: 'land',
-                    elementType: 'all',
-                    stylers: {
-                        color: '#091934'
-                    }
-                }, {
-                    featureType: 'boundary',
-                    elementType: 'geometry',
-                    stylers: {
-                        color: '#064f85'
-                    }
-                }, {
-                    featureType: 'railway',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'highway',
-                    elementType: 'geometry',
-                    stylers: {
-                        color: '#004981'
-                    }
-                }, {
-                    featureType: 'highway',
-                    elementType: 'geometry.fill',
-                    stylers: {
-                        color: '#005b96',
-                        lightness: 1
-                    }
-                }, {
-                    featureType: 'highway',
-                    elementType: 'labels',
-                    stylers: {
-                        visibility: 'on'
-                    }
-                }, {
-                    featureType: 'arterial',
-                    elementType: 'geometry',
-                    stylers: {
-                        color: '#004981',
-                        lightness: -39
-                    }
-                }, {
-                    featureType: 'arterial',
-                    elementType: 'geometry.fill',
-                    stylers: {
-                        color: '#00508b'
-                    }
-                }, {
-                    featureType: 'poi',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'green',
-                    elementType: 'all',
-                    stylers: {
-                        color: '#056197',
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'subway',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'manmade',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'local',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'arterial',
-                    elementType: 'labels',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'boundary',
-                    elementType: 'geometry.fill',
-                    stylers: {
-                        color: '#029fd4'
-                    }
-                }, {
-                    featureType: 'building',
-                    elementType: 'all',
-                    stylers: {
-                        color: '#1a5787'
-                    }
-                }, {
-                    featureType: 'label',
-                    elementType: 'all',
-                    stylers: {
-                        visibility: 'off'
-                    }
-                }, {
-                    featureType: 'poi',
-                    elementType: 'labels.text.fill',
-                    stylers: {
-                        color: '#ffffff'
-                    }
-                }, {
-                    featureType: 'poi',
-                    elementType: 'labels.text.stroke',
-                    stylers: {
-                        color: '#1e1c1c'
-                    }
-                }]
+                ]
             });
-            bmap.centerAndZoom(new BMap.Point(107.592873,29.982511), 9); // 初始化地图,设置中心点坐标和地图级别
+            bmap.centerAndZoom(new BMap.Point(106.558027,29.558934), 10); // 初始化地图,设置中心点坐标和地图级别
             // 第一步创建mapv示例
             var mapv = new Mapv({
                 drawTypeControl: true,
@@ -1673,7 +1948,7 @@ function DiDi(tablename) {
                 animationOptions: {
                     //scope: 60 * 60 * 3,
                     size: 5,
-                    duration: 10000, // 动画时长, 单位毫秒
+                    duration: 30000, // 动画时长, 单位毫秒
                     fps: 20,         // 每秒帧数
                     transition: "linear",
                 }
@@ -2874,6 +3149,10 @@ function guiji(tablename) {
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
     $("#table").css('display',"none");
+    //加载按钮，有问题
+    var dom = document.getElementById("container_echarts");
+    var myChart = echarts.init(dom);
+    myChart.showLoading();
     var enteredDay='2018-05-01';
     $.post("./php/guiji_mapv.php?tablename="+"realtimedata_201805_merge_people_time"+"&enteredDay="+enteredDay,function (data) {
         var driveData = JSON.parse(data);
@@ -2891,130 +3170,151 @@ function guiji(tablename) {
         });
         bmap.enableScrollWheelZoom();
         bmap.setMapStyle({
-            styleJson: [{
-                featureType: 'water',
-                elementType: 'all',
-                stylers: {
-                    color: '#044161'
+            styleJson: [
+                {
+                    featureType: 'water',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#044161'
+                    }
+                },
+                {
+                    featureType: 'land',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#091934'
+                    }
+                },
+                {
+                    featureType: 'boundary',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#064f85'
+                    }
+                },
+                {
+                    featureType: 'railway',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'highway',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#004981'
+                    }
+                },
+                {
+                    featureType: 'highway',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#005b96',
+                        lightness: 1
+                    }
+                },
+                {
+                    featureType: 'highway',
+                    elementType: 'labels',
+                    stylers: {
+                        visibility: 'on'
+                    }
+                },
+                {
+                    featureType: 'arterial',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#004981',
+                        lightness: -39
+                    }
+                },
+                {
+                    featureType: 'arterial',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#00508b'
+                    }
+                },
+                {
+                    featureType: 'poi',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'on'
+                    }
+                },
+                {
+                    featureType: 'green',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#056197',
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'subway',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'manmade',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'local',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'arterial',
+                    elementType: 'labels',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                },
+                {
+                    featureType: 'boundary',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#029fd4'
+                    }
+                },
+                {
+                    featureType: 'building',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#1a5787'
+                    }
+                },
+                {
+                    featureType: 'label',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'on'
+                    }
+                },
+                {
+                    featureType: 'poi',
+                    elementType: 'labels.text.fill',
+                    stylers: {
+                        color: '#ffffff'
+                    }
+                },
+                {
+                    featureType: 'poi',
+                    elementType: 'labels.text.stroke',
+                    stylers: {
+                        color: '#1e1c1c'
+                    }
                 }
-            }, {
-                featureType: 'land',
-                elementType: 'all',
-                stylers: {
-                    color: '#091934'
-                }
-            }, {
-                featureType: 'boundary',
-                elementType: 'geometry',
-                stylers: {
-                    color: '#064f85'
-                }
-            }, {
-                featureType: 'railway',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'highway',
-                elementType: 'geometry',
-                stylers: {
-                    color: '#004981'
-                }
-            }, {
-                featureType: 'highway',
-                elementType: 'geometry.fill',
-                stylers: {
-                    color: '#005b96',
-                    lightness: 1
-                }
-            }, {
-                featureType: 'highway',
-                elementType: 'labels',
-                stylers: {
-                    visibility: 'on'
-                }
-            }, {
-                featureType: 'arterial',
-                elementType: 'geometry',
-                stylers: {
-                    color: '#004981',
-                    lightness: -39
-                }
-            }, {
-                featureType: 'arterial',
-                elementType: 'geometry.fill',
-                stylers: {
-                    color: '#00508b'
-                }
-            }, {
-                featureType: 'poi',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'green',
-                elementType: 'all',
-                stylers: {
-                    color: '#056197',
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'subway',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'manmade',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'local',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'arterial',
-                elementType: 'labels',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'boundary',
-                elementType: 'geometry.fill',
-                stylers: {
-                    color: '#029fd4'
-                }
-            }, {
-                featureType: 'building',
-                elementType: 'all',
-                stylers: {
-                    color: '#1a5787'
-                }
-            }, {
-                featureType: 'label',
-                elementType: 'all',
-                stylers: {
-                    visibility: 'off'
-                }
-            }, {
-                featureType: 'poi',
-                elementType: 'labels.text.fill',
-                stylers: {
-                    color: '#ffffff'
-                }
-            }, {
-                featureType: 'poi',
-                elementType: 'labels.text.stroke',
-                stylers: {
-                    color: '#1e1c1c'
-                }
-            }]
+            ]
         });
         bmap.centerAndZoom(new BMap.Point(106.456187, 29.587515), 17); // 初始化地图,设置中心点坐标和地图级别
         // 第一步创建mapv示例
@@ -3040,7 +3340,7 @@ function guiji(tablename) {
             animationOptions: {
                 //scope: 60 * 60 * 3,
                 size: 5,
-                duration: 10000, // 动画时长, 单位毫秒
+                duration: 30000, // 动画时长, 单位毫秒
                 fps: 20,         // 每秒帧数
                 transition: "linear",
             }
@@ -3050,63 +3350,592 @@ function guiji(tablename) {
             // }
         });
         layer.setMapv(mapv);
+        //点图层
         var poitlayer = new Mapv.Layer({
-            //mapv: mapv, // 对应的mapv实例
-            zIndex: 1, // 图层层级
+            mapv: mapv, // 对应的mapv实例
+            zIndex: 19891015, // 图层层级
             dataType: 'point', // 数据类型，点类型
-            data: [{
-                lng:106.457175,
-                lat:29.589819,
-                count:10
-            },{
-                lng:106.4577,
-                lat:29.585917,
-                count:30
-            },{
-                lng:106.458603,
-                lat:29.585199,
-                count:30
-            },{
-                lng:106.456806,
-                lat:29.588473,
-                count:30
-            },{
-                lng:106.458913,
-                lat:29.587805,
-                count:30
-            },{
-                lng:106.457673,
-                lat:29.588822,
-                count:30
-            },{
-                lng:106.454655,
-                lat:29.584056,
-                count:30
-            },{
-                lng:106.459155,
-                lat:29.58819,
-                count:30
-            },{
-                lng:106.456905,
-                lat:29.58512,
-                count:30
-            },{
-                lng:106.458872,
-                lat:29.585784,
-                count:30
-            }], // 数据
-            dataRangeControl: false, // 值阈控件
+            data: [
+                {
+                    lng:106.457175,
+                    lat:29.589819,
+                    name:'10'
+                },
+                {
+                    lng:106.4577,
+                    lat:29.585917,
+                    name:'10'
+                },
+                {
+                    lng:106.458603,
+                    lat:29.585199,
+                    name:'10'
+                },
+                {
+                    lng:106.456806,
+                    lat:29.588473,
+                    name:'10'
+                },
+                {
+                    lng:106.458913,
+                    lat:29.587805,
+                    name:'10'
+                },
+                {
+                    lng:106.457673,
+                    lat:29.588822,
+                    name:'10'
+                },
+                {
+                    lng:106.454655,
+                    lat:29.584056,
+                    name:'10'
+                },
+                {
+                    lng:106.459155,
+                    lat:29.58819,
+                    name:'10'
+                },
+                {
+                    lng:106.456905,
+                    lat:29.58512,
+                    name:'10'
+                },
+                {
+                    lng:106.458872,
+                    lat:29.585784,
+                    name:'10'
+                }
+            ], // 数据
+            //dataRangeControl: false, // 值阈控件
             drawType: 'simple', // 展示形式
-            drawOptions: { // 绘制参数
+            drawOptions: {
+                // 绘制参数
                 fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色
                 //strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色
                 //lineWidth: 4, // 描边宽度
                 shadowColor: 'rgba(255, 255, 255, 1)', // 投影颜色
                 shadowBlur: 35,  // 投影模糊级数
                 globalCompositeOperation: 'lighter', // 颜色叠加方式
+                label: { // 显示label文字
+                    show: true, // 是否显示
+                    font: "20px", // 设置字号
+                    // minZoom: 7, // 最小显示的级别
+                    fillStyle: 'rgba(255, 0, 0, 1)' // label颜色
+                },
                 size: 5 // 半径
             }
         });
-        poitlayer.setMapv(mapv);
+        //poitlayer.setMapv(mapv);
+        //文本图层
+        // var textlayer = new Mapv.Layer({
+        //     //mapv: mapv, // 对应的mapv实例
+        //     zIndex: 19891015, // 图层层级
+        //     dataType: 'point', // 数据类型，点类型
+        //     data: [
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.457175,29.589819]
+        //             },
+        //             text:'巴渝居民馆'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.4577,29.585917]
+        //             },
+        //             text:'宝善宫'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.458603,29.585199]
+        //             },
+        //             text:'磁器口牌坊'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.456806,29.588473]
+        //             },
+        //             text:'横街'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.458913,29.587805]
+        //             },
+        //             text:'老字号汇总'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.457673,29.588822]
+        //             },
+        //             text:'少妇尿童'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.454655,29.584056]
+        //             },
+        //             text:'西门'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.459155,29.58819]
+        //             },
+        //             text:'小重庆碑'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.456905,29.58512]
+        //             },
+        //             text:'鑫记杂货铺'
+        //         },
+        //         {
+        //             geometry:{
+        //                 type:'Point',
+        //                 coordinates:[106.458872,29.585784]
+        //             },
+        //             text:'钟家大院'
+        //         }
+        //     ], // 数据
+        //     dataRangeControl: false, // 值阈控件
+        //     drawType: 'simple', // 展示形式
+        //     drawOptions: {
+        //         // 绘制参数
+        //         fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色
+        //         //strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色
+        //         //lineWidth: 4, // 描边宽度
+        //         shadowColor: 'rgba(255, 255, 255, 1)', // 投影颜色
+        //         shadowBlur: 35,  // 投影模糊级数
+        //         globalCompositeOperation: 'lighter', // 颜色叠加方式
+        //         size: 5 ,// 半径
+        //         label:{
+        //             show:true,
+        //             font:"11px",
+        //             fillStyle:'rgba(255, 255, 255, 1)' // label颜色
+        //         }
+        //     }
+        // });
+        // textlayer.setMapv(mapv);
+        // textData=[
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.457175,29.589819]
+        //         },
+        //         text:'巴渝居民馆'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.4577,29.585917]
+        //         },
+        //         text:'宝善宫'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.458603,29.585199]
+        //         },
+        //         text:'磁器口牌坊'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.456806,29.588473]
+        //         },
+        //         text:'横街'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.458913,29.587805]
+        //         },
+        //         text:'老字号汇总'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.457673,29.588822]
+        //         },
+        //         text:'少妇尿童'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.454655,29.584056]
+        //         },
+        //         text:'西门'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.459155,29.58819]
+        //         },
+        //         text:'小重庆碑'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.456905,29.58512]
+        //         },
+        //         text:'鑫记杂货铺'
+        //     },
+        //     {
+        //         geometry:{
+        //             type:'Point',
+        //             coordinates:[106.458872,29.585784]
+        //         },
+        //         text:'钟家大院'
+        //     }
+        // ];
+        // var textDataSet = new mapv.DataSet(textData);
+        // var textOptions = {
+        //     draw: 'text',
+        //     font: '14px Arial',
+        //     fillStyle: 'white',
+        //     shadowColor: 'yellow',
+        //     shadowBlue: 10,
+        //     zIndex: 11,
+        //     shadowBlur: 10
+        // };
+        // var textMapvLayer = new mapv.baiduMapLayer(map, textDataSet, textOptions);
     })
+}
+
+function guiji_reli(tablename) {
+    tablename = 'realtimedata_20180425_0502_merge_people_time';
+    $("#map").css('display',"none");
+    // $("#map").empty();
+    $("#container_echarts").css('display',"block");
+    $("#table").css('display',"none");
+    var dom = document.getElementById("container_echarts");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    app.title = '磁器口游客热力图';
+    myChart.showLoading();
+    var timelist=['04-25','04-26','04-27','04-28','04-29','04-30','05-01','05-02','05-03','05-04'];
+    var spotxy = new Array();
+    spotxy['巴渝民居馆']=[106.457175,29.589819];
+    spotxy['宝善宫']=[106.4577,29.585917];
+    spotxy['磁器口牌坊']=[106.458603,29.585199];
+    spotxy['横街']=[106.456806,29.588473];
+    spotxy['老字号总汇']=[106.458913,29.587805];
+    spotxy['少妇尿童']=[106.457673,29.588822];
+    spotxy['西门']=[106.454655,29.584056];
+    spotxy['小重庆碑']=[106.459155,29.58819];
+    spotxy['鑫记杂货铺']=[106.456905,29.58512];
+    spotxy['钟家大院']=[106.458872,29.585784];
+    var mydatetime ='2018-04';
+    $.post("./php/ailv_reli.php?tablename="+tablename+"&datetime="+mydatetime,function (data) {
+        var option ={
+            baseOption:{
+                timeline: {
+                    axisType: 'category',
+                    orient: 'vertical',
+                    autoPlay: true,
+                    inverse: true,
+                    playInterval: 1000,
+                    left: null,
+                    right: 30,
+                    top: 50,
+                    bottom: 20,
+                    width: 55,
+                    height: null,
+                    label: {
+                        normal: {
+                            textStyle: {
+                                color: '#ddd'
+                            }
+                        },
+                        emphasis: {
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    symbol: 'circle',
+                    lineStyle: {
+                        color: '#555'
+                    },
+                    checkpointStyle: {
+                        color: '#bbb',
+                        borderColor: '#777',
+                        borderWidth: 2
+                    },
+                    controlStyle: {
+                        showNextBtn: false,
+                        showPrevBtn: false,
+                        normal: {
+                            color: '#666',
+                            borderColor: '#666'
+                        },
+                        emphasis: {
+                            color: '#aaa',
+                            borderColor: '#aaa'
+                        }
+                    },
+                    data: timelist
+                },
+                title: {
+                    text: '磁器口游客热力图',
+                    subtext: 'Develop By paulhee',
+                    sublink :'https://www.didiaosuo.com',
+                    left: 'center',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                backgroundColor: 'rgba(64,74,89,0.8)',
+                // geo: {
+                //     map: '',
+                //     label: {
+                //         emphasis: {
+                //             show: false
+                //         }
+                //     },
+                //     roam: true,//是否开启鼠标缩放和平移漫游
+                //     itemStyle: {
+                //         normal: {
+                //             areaColor: '#323c48',
+                //             borderColor: '#404a59'
+                //         },
+                //         emphasis: {
+                //             areaColor: '#2a333d'
+                //         }
+                //     }
+                // },
+                bmap: {
+                    center: [106.456187, 29.587515],
+                    zoom: 17,
+                    roam: true
+                },
+                // visualMap:{
+                //     // pieces: [
+                //     //     {min: 300, label: '严重污染'},            // (300, Infinity]
+                //     //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
+                //     //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
+                //     //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
+                //     //     {min: 50, max: 100, label: '良'},   // (50, 100]
+                //     //     {min: 0, max: 50, label: '优'}       // (0, 50]
+                //     // ],
+                //     min: 0,
+                //     max: 500,
+                //     splitNumber: 5,
+                //     // inRange: {
+                //     //     color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+                //     // },
+                //     color: ['#A3E00B', '#E09107', '#E0022B'],
+                //     textStyle: {
+                //         color: '#fff'
+                //     },
+                //     right:5
+                // },
+                visualMap: {
+                    left:5,
+                    top:1,
+                    min: 0,
+                    max: 5000,
+                    seriesIndex: 0,
+                    calculable: true,
+                    inRange: {
+                        color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+                    }
+                },
+                series: [
+                    {
+                        name:'磁器口游客',
+                        type: 'heatmap',
+                        coordinateSystem: 'bmap',
+                        data:[],//seriesdata
+                        zlevel:19891015,
+                        label:{
+                            show:true
+                        }
+                    }]
+            },
+            options:[]
+        };
+        var responseJson = JSON.parse(data);
+        for (var i =0;i<responseJson.length;i++){
+            var seriesdata = new Array();
+            for(var j =0;j<responseJson[i].data.length;j++){
+                var item = responseJson[i].data[j];
+                var spotName = item['spotName'];
+                var count = item['count'];
+                var X = spotxy[spotName][0];
+                var Y = spotxy[spotName][1];
+                seriesdata.push([X,Y,count]);
+            }
+            option.options.push({
+                title: {
+                    text: responseJson[i].datetime+'重庆市磁器口景区游客热力图'
+                },
+                series: {
+                    data: seriesdata
+                }
+            });
+        };
+        myChart.setOption(option);
+
+        // myChart.setOption(
+        //     option = {
+        //         timeline: {
+        //             axisType: 'category',
+        //             orient: 'vertical',
+        //             autoPlay: false,
+        //             inverse: true,
+        //             playInterval: 1000,
+        //             left: null,
+        //             right: 10,
+        //             top: 20,
+        //             bottom: 20,
+        //             width: 55,
+        //             height: null,
+        //             label: {
+        //                 normal: {
+        //                     textStyle: {
+        //                         color: '#ddd'
+        //                     }
+        //                 },
+        //                 emphasis: {
+        //                     textStyle: {
+        //                         color: '#fff'
+        //                     }
+        //                 }
+        //             },
+        //             symbol: 'none',
+        //             lineStyle: {
+        //                 color: '#555'
+        //             },
+        //             checkpointStyle: {
+        //                 color: '#bbb',
+        //                 borderColor: '#777',
+        //                 borderWidth: 2
+        //             },
+        //             controlStyle: {
+        //                 showNextBtn: false,
+        //                 showPrevBtn: false,
+        //                 normal: {
+        //                     color: '#666',
+        //                     borderColor: '#666'
+        //                 },
+        //                 emphasis: {
+        //                     color: '#aaa',
+        //                     borderColor: '#aaa'
+        //                 }
+        //             },
+        //             data: timelist
+        //         },
+        //         title: {
+        //             text: '重庆市空气质量AQI热力图',
+        //             subtext: 'Develop By paulhee',
+        //             sublink :'https://www.didiaosuo.com',
+        //             left: 'center',
+        //             textStyle: {
+        //                 color: '#fff'
+        //             }
+        //         },
+        //         backgroundColor: 'rgba(64,74,89,0.8)',
+        //         // geo: {
+        //         //     map: '',
+        //         //     label: {
+        //         //         emphasis: {
+        //         //             show: false
+        //         //         }
+        //         //     },
+        //         //     roam: true,//是否开启鼠标缩放和平移漫游
+        //         //     itemStyle: {
+        //         //         normal: {
+        //         //             areaColor: '#323c48',
+        //         //             borderColor: '#404a59'
+        //         //         },
+        //         //         emphasis: {
+        //         //             areaColor: '#2a333d'
+        //         //         }
+        //         //     }
+        //         // },
+        //         bmap: {
+        //             center: [107.72009,29.871354],
+        //             zoom: 8.5,
+        //             roam: true
+        //         },
+        //         // visualMap:{
+        //         //     // pieces: [
+        //         //     //     {min: 300, label: '严重污染'},            // (300, Infinity]
+        //         //     //     {min: 200, max: 300, label: '重度污染'},  // (200, 300]
+        //         //     //     {min: 150, max: 200, label: '中度污染'},  // (150, 200]
+        //         //     //     {min: 100, max: 150, label: '轻度污染'},  // (100, 150]
+        //         //     //     {min: 50, max: 100, label: '良'},   // (50, 100]
+        //         //     //     {min: 0, max: 50, label: '优'}       // (0, 50]
+        //         //     // ],
+        //         //     min: 0,
+        //         //     max: 500,
+        //         //     splitNumber: 5,
+        //         //     // inRange: {
+        //         //     //     color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+        //         //     // },
+        //         //     color: ['#A3E00B', '#E09107', '#E0022B'],
+        //         //     textStyle: {
+        //         //         color: '#fff'
+        //         //     },
+        //         //     right:5
+        //         // },
+        //         visualMap: {
+        //             right:5,
+        //             min: 0,
+        //             max: 500,
+        //             seriesIndex: 0,
+        //             calculable: true,
+        //             inRange: {
+        //                 color: ['#E0022B', '#E09107', '#A3E00B'].reverse()
+        //             }
+        //         },
+        //         series: [
+        //         {
+        //             name:'AQI',
+        //             type: 'heatmap',
+        //             coordinateSystem: 'bmap',
+        //             data:seriesdata,
+        //             zlevel:19891015
+        //         },
+        //         {
+        //             name:'cq_map',
+        //             type: 'map',
+        //             map: 'MY',
+        //             roam:true,
+        //             itemStyle:{
+        //                 normal:{
+        //                     opacity:0.5,
+        //                     borderWidth:2,
+        //                     borderColor:'#cccccc',
+        //                     areaColor:'rgba(128, 128, 128, 0)',
+        //                 }
+        //             },
+        //             emphasis:{
+        //                 itemStyle:{
+        //
+        //                 }
+        //             },
+        //             zlevel:19891010
+        //         }]
+        //     }
+        // );
+        // if (!app.inNode) {
+        //     // 添加百度地图插件
+        //     var bmap = myChart.getModel().getComponent('bmap').getBMap();
+        //     bmap.addControl(new BMap.MapTypeControl());
+        // }
+        myChart.hideLoading();
+    });
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
 }
