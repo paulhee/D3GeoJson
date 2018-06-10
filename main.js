@@ -1504,7 +1504,7 @@ function building() {
     // };
     // var localPbfLayer = L.vectorGrid.protobuf(localUrl, localVectorTileOptions).addTo(map);
 }
-
+//mapv
 function DiDi(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
@@ -1514,100 +1514,193 @@ function DiDi(tablename) {
     var myChart = echarts.init(dom);
     myChart.showLoading();
     var taxiRoutes = [];
-    $.post("./php/TaxiTrace.php?tablename="+tablename,function (data) {
-        var responseJson = JSON.parse(data);
-        if(responseJson.status == 'success'){
-            var trace = responseJson.data;
-            for (var i =0;i<trace.length;i++){
-                taxiRoutes.push({
-                    coords: trace[i]
-                });
-            }
-        }
-        myChart.setOption({
-            maptalks3D: {
-                center: [104.091, 30.639],
-                zoom: 14,
-                // pitch: 55,
-                // zoomControl : {
-                //     'position'  : 'top-left',
-                //     'slider'    : true,
-                //     'zoomLevel' : true
-                // },
-                // layerSwitcherControl: {
-                //     'position'  : 'top-right',
-                //     // title of base layers
-                //     'baseTitle' : 'Base Layers',
-                //     // title of layers
-                //     'overlayTitle' : 'Layers',
-                //     // layers you don't want to manage with layer switcher
-                //     'excludeLayers' : [],
-                //     // css class of container element, maptalks-layer-switcher by default
-                //     'containerClass' : 'maptalks-layer-switcher'
-                // },
-                baseLayer: {
-                    'urlTemplate': 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-                    'subdomains': ['a', 'b', 'c', 'd']
-                },
-                altitudeScale: 2,
-                postEffect: {
-                    enable: true,
-                    FXAA: {
-                        enable: true
+    $.get('Data/cq_qx2000.json', function (myJson){
+        $.post("./php/didi.php?tablename="+tablename,function (data) {
+            var driveData = JSON.parse(data);
+            var bmap = new BMap.Map('container_echarts', {
+                enableMapClick: false,
+                // minZoom: 4
+                //vectorMapLevel: 3
+            });
+            bmap.enableScrollWheelZoom();
+            bmap.setMapStyle({
+                styleJson: [{
+                    featureType: 'water',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#044161'
                     }
-                },
-                light: {
-                    main: {
-                        intensity: 1,
-                        shadow: true,
-                        shadowQuality: 'high'
-                    },
-                    ambient: {
-                        intensity: 0.
-                    },
-                    ambientCubemap: {
-                        texture: './imgs/data-1491838644249-ry33I7YTe.hdr',
-                        exposure: 1,
-                        diffuseIntensity: 0.5,
-                        specularIntensity: 2
+                }, {
+                    featureType: 'land',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#091934'
                     }
+                }, {
+                    featureType: 'boundary',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#064f85'
+                    }
+                }, {
+                    featureType: 'railway',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'highway',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#004981'
+                    }
+                }, {
+                    featureType: 'highway',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#005b96',
+                        lightness: 1
+                    }
+                }, {
+                    featureType: 'highway',
+                    elementType: 'labels',
+                    stylers: {
+                        visibility: 'on'
+                    }
+                }, {
+                    featureType: 'arterial',
+                    elementType: 'geometry',
+                    stylers: {
+                        color: '#004981',
+                        lightness: -39
+                    }
+                }, {
+                    featureType: 'arterial',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#00508b'
+                    }
+                }, {
+                    featureType: 'poi',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'green',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#056197',
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'subway',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'manmade',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'local',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'arterial',
+                    elementType: 'labels',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'boundary',
+                    elementType: 'geometry.fill',
+                    stylers: {
+                        color: '#029fd4'
+                    }
+                }, {
+                    featureType: 'building',
+                    elementType: 'all',
+                    stylers: {
+                        color: '#1a5787'
+                    }
+                }, {
+                    featureType: 'label',
+                    elementType: 'all',
+                    stylers: {
+                        visibility: 'off'
+                    }
+                }, {
+                    featureType: 'poi',
+                    elementType: 'labels.text.fill',
+                    stylers: {
+                        color: '#ffffff'
+                    }
+                }, {
+                    featureType: 'poi',
+                    elementType: 'labels.text.stroke',
+                    stylers: {
+                        color: '#1e1c1c'
+                    }
+                }]
+            });
+            bmap.centerAndZoom(new BMap.Point(107.592873,29.982511), 9); // 初始化地图,设置中心点坐标和地图级别
+            // 第一步创建mapv示例
+            var mapv = new Mapv({
+                drawTypeControl: true,
+                map: bmap  // 百度地图的map实例
+            });
+
+            var layer = new Mapv.Layer({
+                zIndex: 1,
+                mapv: mapv,
+                dataType: 'polyline',
+                coordType: 'bd09ll',
+                data: driveData,
+                drawType: 'simple',
+                drawOptions: {
+                    lineWidth: 1,
+                    shadowBlur: 10,
+                    shadowColor: "rgba(250, 255, 0, 1)",
+                    strokeStyle: "rgba(250, 250, 0, 2)"
                 },
-                // layers : [
-                //     // new maptalks.VectorLayer('v').addGeometry(zcq_maptalks)
-                //     // new maptalks.TileLayer('road', {
-                //     //     urlTemplate:'http://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png',
-                //     //     subdomains:['a','b','c','d'],
-                //     //     opacity:1
-                //     // })
-                // ]
-            },
-            series: [{
-                type: 'lines3D',
-                coordinateSystem: 'maptalks3D',
-                effect:{
-                    show:true,
-                    constantSpeed:5,
-                    trailWidth:2,
-                    trailLength:0.4,
-                    spotIntensity:10
-                },
-                blendMode:'lighter',
-                polyline:true,
-                lineStyle:{
-                    width:0.1,
-                    color:'rgb(200,40,0)',
-                    opacity:0.
-                },
-                data: taxiRoutes
-            }]
-        });
-        var maptalksIns = myChart.getModel().getComponent('maptalks3D').getMaptalks();
-        maptalksIns.on('click', function(e) {
-            console.log(e)
-        });
-        myChart.hideLoading();
-        window.addEventListener('resize', function() {
-            myChart.resize();
+                animation: 'time',
+                animationOptions: {
+                    //scope: 60 * 60 * 3,
+                    size: 5,
+                    duration: 10000, // 动画时长, 单位毫秒
+                    fps: 20,         // 每秒帧数
+                    transition: "linear",
+                }
+                // animation: true,
+                // animationOptions: {
+                //     size: 1
+                // }
+            });
+            layer.setMapv(mapv);
+            var cq_layer = new Mapv.Layer({
+                //mapv: mapv, // 对应的mapv实例
+                zIndex: 1, // 图层层级
+                dataType: 'polygon', // 数据类型，面类型
+                data: myJson, // 数据
+                dataRangeControl: false, // 值阈控件
+                drawType: 'simple', // 展示形式
+                drawOptions: { // 绘制参数
+                    fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色
+                    //strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色
+                    //lineWidth: 4, // 描边宽度
+                    shadowColor: 'rgba(255, 255, 255, 1)', // 投影颜色
+                    shadowBlur: 35,  // 投影模糊级数
+                    globalCompositeOperation: 'lighter', // 颜色叠加方式
+                    size: 5 // 半径
+                }
+            });
+            cq_layer.setMapv(mapv);
         });
     });
 }
