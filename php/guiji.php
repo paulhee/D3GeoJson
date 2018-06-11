@@ -23,7 +23,7 @@
             if($num_rows == 1){
                 $jwd[] = $jwd[0];
             }
-            $color=array('normal'=>array('color'=>"rgba(200, 40, 0, 1)"));//"rgba(" .rand(1,255) ."," .rand(1,255) ."," .rand(1,255) .",1)"
+            $color=array('normal'=>array('color'=>"rgba(90, 117, 223, 1)"));//"rgba(" .rand(1,255) ."," .rand(1,255) ."," .rand(1,255) .",1)"
             $data[]=array('coords'=>$jwd,'lineStyle'=>$color);//'lonlat'=>$jwd,
             //echo $Onesql ."<br>";
             if($count == 5000){
