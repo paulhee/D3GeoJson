@@ -320,7 +320,11 @@ $(function () {
 function table_load(tablename) {
     $(".loading").css("display","flex");//显示加载过程的图标
     $("#map").css('display',"none");
-    $("#table").css('display',"block");
+    $("#container_echarts").css('display',"none");
+    $("#table").css('display',"flex");
+    var width_left=parseFloat(document.getElementById("left").style.width.replace("px",""));
+    var width_middle=parseFloat(document.getElementById("middle").style.width.replace("px",""));
+    var width_table =document.documentElement.clientWidth-(width_left+0);
     var url = "./php/main.php?tablename="+tablename+"&page=1";
     $.post(url,function (data) {
         var responseJson = JSON.parse(data);
@@ -340,7 +344,8 @@ function table_load(tablename) {
         table.GM({
             supportRemind:true,
             gridManagerName:'test',
-            height:'400px',
+            // height:'100%',
+            // width:width_table.toString()+"px",
             supportAjaxPage:true,
             supportSorting:true,
             isCombSorting:false,
@@ -395,67 +400,6 @@ function table_load(tablename) {
         });
         $(".loading").css("display","none");//关闭加载过程的图标
     });
-    // var xmlHttp = GetXmlHttpObject();// XMLHttpRequest对象用于在后台与服务器交换数据
-    // if (xmlHttp == null){
-    //     alert("Browser does not support HTTP Request");
-    //     return;
-    // }
-    // var tablename="xiaoqu";
-
-    // xmlHttp.onreadystatechange=stateChanged(xmlHttp);
-    // xmlHttp.open("GET",url,false);
-    // xmlHttp.send();
-    // var responseText = xmlHttp.responseText;//从服务器获得数据
-
-    // var responseJson = JSON.parse(responseText);
-    // // alert(responseJson);
-    // var table_thead_tr = document.getElementById("table-style").children[0].children[0];
-    // for (var i =0;i<responseJson.length;i++){
-    //     for (var key in responseJson[i]){
-    //         var th = document.createElement("th");
-    //         th.innerText = key;
-    //         th.setAttribute("data-field",key);
-    //         th.setAttribute("data-align","center");
-    //         th.setAttribute("data-sortable","true");
-    //         table_thead_tr.appendChild(th);
-    //     }
-    //     break;
-    // }
-    // $("#table-style").bootstrapTable({data:responseJson});
-    //$('#table').bootstrapTable('destroy');//取消显示表格
-}
-
-//为不同浏览器创建不同 XMLHTTP 对象
-function GetXmlHttpObject()
-{
-    var xmlHttp=null;
-    try
-    {
-        // Firefox, Opera 8.0+, Safari
-        xmlHttp=new XMLHttpRequest();
-    }
-    catch (e)
-    {
-        // Internet Explorer
-        try
-        {
-            xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-        }
-        catch (e)
-        {
-            xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-    }
-    return xmlHttp;
-}
-
-//每当 XMLHTTP 对象的状态发生改变，则执行该函数。
-function stateChanged(xmlHttp1)
-{
-    if (xmlHttp1.readyState==4 || xmlHttp1.readyState=="complete")
-    {
-        alert(xmlHttp1.responseText);
-    }
 }
 
 //leaflet+ECharts3模拟人口流动
