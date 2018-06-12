@@ -186,7 +186,7 @@ function RealTimeTraffic(sourcedata) {
 
 function lianjia(filename) {
     $("#map").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var svg = document.getElementById("svg_"+filename);
     if (svg == null){
         $(".loading").css("display","block");//显示加载过程的图标
@@ -317,14 +317,16 @@ $(function () {
     }
 });
 
-function table_load(tablename) {
+function table_load(tablename,titlename) {
     $(".loading").css("display","flex");//显示加载过程的图标
     $("#map").css('display',"none");
     $("#container_echarts").css('display',"none");
-    $("#table").css('display',"flex");
+    $("#grid-main").css('display',"flex");
     var width_left=parseFloat(document.getElementById("left").style.width.replace("px",""));
     var width_middle=parseFloat(document.getElementById("middle").style.width.replace("px",""));
-    var width_table =document.documentElement.clientWidth-(width_left+0);
+    var width_table =document.documentElement.clientWidth-(width_left+0).toString()+"px";
+    $("#grid-main").css('width',width_table);
+    document.getElementById('showtable_name').innerText=titlename;
     var url = "./php/main.php?tablename="+tablename+"&page=1";
     $.post(url,function (data) {
         var responseJson = JSON.parse(data);
@@ -340,31 +342,64 @@ function table_load(tablename) {
         columnDataJson.push({"key":'action','remind':'the action','width':'10%','text':'<div>操作</div>','template':function(action, rowObject){
                 return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
             }});
+        document.querySelector('table').GM('cleanData');
+        document.querySelector('table').GM('destroy');
         var table = document.querySelector('table');
         table.GM({
             supportRemind:true,
             gridManagerName:'test',
-            // height:'100%',
-            // width:width_table.toString()+"px",
+            height:'500px',
+            width:width_table,
             supportAjaxPage:true,
             supportSorting:true,
             isCombSorting:false,
             disableCache:true,
-            ajax_url:url,
+            // ajax_url:url,
+            ajax_data: function () {
+                return url;
+            },
             ajax_type:'POST',
             supportMenu:true,
             query:{test:22},
             dataKey:'data',
             pageSize:20,
-            sizeData:20,
+            // sizeData:20,
             columnData:columnDataJson,
+            // 选择事件执行前事件
+            checkedBefore: function(checkedList){
+                console.log('checkedBefore==', checkedList);
+            },
+            // 选择事件执行后事件
+            checkedAfter: function(checkedList){
+                console.log('checkedAfter==', checkedList);
+             },
+            // 全选事件执行前事件
+            checkedAllBefore: function(checkedList){
+                console.log('checkedAllBefore==', checkedList);
+             },
+            // 全选事件执行后事件
+            checkedAllAfter: function(checkedList){
+                console.log('checkedAllAfter==', checkedList);
+            },
+            // AJAX请求前事件函数
+            ajax_beforeSend: function(promise){
+                console.log('ajax_beforeSend');
+            },
+            // AJAX成功事件函数
+            ajax_success: function(response){
+                console.log('ajax_success');
+            },
+            // AJAX失败事件函数
+            ajax_error: function(error){
+                console.log('ajax_error');
+            },
+            // AJAX结束事件函数
+            ajax_complete: function(complete){
+                console.log('ajax_complete');
+            },
             // 分页前事件
             pagingBefore:function(query){
                 console.log('pagingBefore', query);
-            },
-            // 分页后事件
-            pagingAfter: function(data){
-                console.log('pagingAfter', data);
             },
             // 分页后事件
             pagingAfter: function(data){
@@ -405,7 +440,7 @@ function table_load(tablename) {
 //leaflet+ECharts3模拟人口流动
 function population(e) {
     $("#map").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     if (e.attributes['value'].value == 'checked'){
         //未选中
         // overlay._option.series= [];
@@ -707,7 +742,7 @@ function AQIFunction1(tablename){
     // $("#map").empty();
     // mapStuff = initDemoMap();
     // map = mapStuff.map;
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     $.post("./php/AQI.php?tablename="+tablename+"&datetime=2018-04-25",function (data) {
         var responseJson = JSON.parse(data);
         var seriesdata = new Array();
@@ -806,7 +841,7 @@ function AQIFunction(tablename){
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
     var app = {};
@@ -1299,7 +1334,7 @@ function publicmail() {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
     myChart.showLoading();
@@ -1647,7 +1682,7 @@ function building1() {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     $.getJSON('./Data/building_3.json',function (buildingjson) {
         $.getJSON('./Data/zcq.json',function (zcqjsondata) {
             var multipolygon = new Array();
@@ -1866,7 +1901,7 @@ function DiDi(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     //加载按钮，有问题
     // var dom = document.getElementById("container_echarts");
     // var myChart = echarts.init(dom);
@@ -2089,7 +2124,7 @@ function guiji1(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
     myChart.showLoading();
@@ -2597,7 +2632,7 @@ function guiji1(tablename) {
 //leaflet 未成功
 function guiji2(tablename) {
     $("#map").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var enteredDay='2018-05-01';
     $.post("./php/guiji.php?tablename="+"realtimedata_201805_merge_tourist"+"&enteredDay="+enteredDay,function (data) {
         var mydata = JSON.parse(data);
@@ -2908,7 +2943,7 @@ function guiji2(tablename) {
 function guiji3(tablename) {
     $("#map").css('display',"none");
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
     myChart.showLoading();
@@ -3271,7 +3306,7 @@ function guiji(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     //加载按钮，有问题
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
@@ -3737,7 +3772,7 @@ function guiji_reli(tablename) {
     $("#map").css('display',"none");
     // $("#map").empty();
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var dom = document.getElementById("container_echarts");
     var myChart = echarts.init(dom);
     var app = {};
@@ -4066,9 +4101,9 @@ function guiji_reli(tablename) {
 function nanocube() {
     $("#map").css('display',"none");
     $("#container_echarts").css('display',"block");
-    $("#table").css('display',"none");
+    $("#grid-main").css('display',"none");
     var iframe = document.createElement("iframe");
-    iframe.setAttribute("src","http://172.16.4.206:8000/#poi");
+    iframe.setAttribute("src","http://172.16.4.206:8000/#rpoi");
     iframe.setAttribute("width","100%");
     iframe.setAttribute("height","100%");
     iframe.setAttribute("frameborder","0");
