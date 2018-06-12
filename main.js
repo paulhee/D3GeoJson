@@ -184,27 +184,28 @@ function RealTimeTraffic(sourcedata) {
 
 }
 
-function lianjia(filename) {
+function lianjia1(filename) {
     $("#map").css('display',"block");
     $("#grid-main").css('display',"none");
+    $("#container_echarts").css('display',"none");
     var svg = document.getElementById("svg_"+filename);
     if (svg == null){
         $(".loading").css("display","block");//显示加载过程的图标
         d3.json("Data/"+filename+".json", function(error, collection){
             if (error) throw error;
-            var svg = d3.select(map.getPanes().overlayPane).append("svg").attr("class","leaflet-zoom-animated").attr("id","svg_"+filename),
-                g = svg.append("g").attr("class", "leaflet-zoom-hide");
-            var feature = g.selectAll("path").data(collection.features).enter().append("path").attr("class","leaflet-clickable").attr('r','5');
+            var svg = d3.select(map.getPanes().overlayPane).append("svg").attr("class","leaflet-zoom-animated").attr("id","svg_"+filename);
+            var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+            var feature = g.selectAll("path").data(collection.features).enter().append("path").attr("class","leaflet-clickable").attr('r','3');
             function reset() {
-                var bounds = path.bounds(collection),
-                    topLeft = bounds[0],
-                    bottomRight = bounds[1];
-                svg .attr("width", bottomRight[0] - topLeft[0])
-                    .attr("height", bottomRight[1] - topLeft[1])
+                var bounds = path.bounds(collection);
+                var topLeft = bounds[0];
+                var bottomRight = bounds[1];
+                svg .attr("width", bottomRight[0] - topLeft[0]+10)
+                    .attr("height", bottomRight[1] - topLeft[1]+10)
                     .style("left", topLeft[0] + "px")
                     .style("top", topLeft[1] + "px");
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-                feature.attr("d", path).attr("stroke","rgb(10,205,0)").attr('stroke-width', 1).attr('fill','rgb(10,205,0)').attr("r","5").attr("class","leaflet-clickable");
+                feature.attr("d", path).attr("stroke","rgb(10,205,0)").attr('stroke-width', 1).attr('fill','rgb(10,205,0)').attr("r","3").attr("class","leaflet-clickable");
             }
             map.on("viewreset", reset);
             map.on("zoomend",reset);
@@ -214,6 +215,40 @@ function lianjia(filename) {
     }else {
         svg.parentNode.removeChild(svg);
     }
+}
+
+//leaflet
+function lianjia(filename) {
+    $("#map").css('display',"block");
+    $("#grid-main").css('display',"none");
+    $("#container_echarts").css('display',"none");
+    $.getJSON("./Data/"+filename+".json",function (geojsonFeature) {
+        L.geoJSON(
+            geojsonFeature,
+            {
+                onEachFeature: function(feature, layer){
+                    if (feature.properties) {
+                        var info ="属性表<br>";//feature.properties.名称
+                        for(var key in feature.properties){
+                            info = info + key +":"+ feature.properties[key]+"<br>";
+                        }
+                        layer.bindPopup(info);
+                    }
+                },
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5,
+                        fillColor: "#ff7800",
+                        color: "#ff7800",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                }
+            }
+        ).addTo(map);
+    });
+
 }
 
 // function is_weixin() {
@@ -441,6 +476,7 @@ function table_load(tablename,titlename) {
 function population(e) {
     $("#map").css('display',"block");
     $("#grid-main").css('display',"none");
+    $("#container_echarts").css('display',"none");
     if (e.attributes['value'].value == 'checked'){
         //未选中
         // overlay._option.series= [];
@@ -665,7 +701,7 @@ function leafletecharts_population() {
         },
         legend: {
             orient: 'vertical',
-            x: 'left',
+            x: 'right',
             y: 'center',
             data:['全国流入重庆', '四川流入重庆'],
             selected:{'全国流入重庆':true, '四川流入重庆':false},
